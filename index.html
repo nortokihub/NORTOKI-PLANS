@@ -1,0 +1,3254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Earnplus</title>
+    <script src='//libtl.com/sdk.js' data-zone='8690632' data-sdk='show_8690632'></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --primary: #5B5FFF;
+            --secondary: #9C6CFF;
+            --accent: #00E5FF;
+            --bg: #0F172A;
+            --bg2: #1a2340;
+            --card: rgba(255,255,255,0.07);
+            --card-border: rgba(255,255,255,0.12);
+            --text: #e2e8f0;
+            --text-muted: rgba(255,255,255,0.5);
+            --gold: #FFCA28;
+            --gold2: #FF8F00;
+            --neon: #00E5FF;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            margin: 0;
+        }
+        h1,h2,h3,h4,h5,.heading { font-family: 'Poppins', sans-serif; }
+        .app-wrap {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            background: linear-gradient(160deg, #0F172A 0%, #1a1040 50%, #0F172A 100%);
+            overflow: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 200;
+            backdrop-filter: blur(4px);
+        }
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: -290px;
+            width: 290px;
+            height: 100vh;
+            background: linear-gradient(180deg, #0d0d2b 0%, #0F172A 100%);
+            border-right: 1px solid rgba(91,95,255,0.2);
+            z-index: 300;
+            transition: left 0.3s cubic-bezier(0.4,0,0.2,1);
+            overflow-y: auto;
+            box-shadow: 5px 0 40px rgba(91,95,255,0.15);
+        }
+        #sidebar.open { left: 0; }
+        .sidebar-header {
+            padding: 24px 20px 20px;
+            background: linear-gradient(135deg, rgba(91,95,255,0.15) 0%, transparent 100%);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .sidebar-avatar {
+            width: 72px; height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: 800; color: white;
+            border: 2px solid rgba(91,95,255,0.5);
+            overflow: hidden; margin-bottom: 12px;
+            box-shadow: 0 0 20px rgba(91,95,255,0.3);
+        }
+        .sidebar-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+        .sidebar-name { color: white; font-weight: 700; font-size: 16px; font-family: 'Poppins', sans-serif; }
+        .sidebar-email { color: rgba(255,255,255,0.45); font-size: 11px; margin-top: 2px; }
+        .sidebar-nav { padding: 10px 0; }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 14px;
+            padding: 13px 22px;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500; font-size: 14px;
+            cursor: pointer; transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .sidebar-item:hover, .sidebar-item.active {
+            background: rgba(91,95,255,0.12);
+            color: var(--accent);
+            border-left-color: var(--primary);
+        }
+        .sidebar-item .s-icon {
+            width: 34px; height: 34px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.07);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+        }
+        .sidebar-divider { border-color: rgba(255,255,255,0.07); margin: 6px 22px; }
+
+        /* ===== HOME HEADER ===== */
+        .home-header {
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 60%, #0d1a2b 100%);
+            padding: 18px 18px 26px;
+            position: relative;
+            overflow: visible;
+            border-radius: 0 0 24px 24px;
+            margin-bottom: -10px;
+            z-index: 2;
+            border-bottom: 1px solid rgba(91,95,255,0.2);
+        }
+        .home-header::before {
+            content: '';
+            position: absolute;
+            top: -40px; right: -40px;
+            width: 180px; height: 180px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(91,95,255,0.2) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .home-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30px; left: -30px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0,229,255,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 1; }
+        .header-actions { display: flex; gap: 10px; }
+        .header-icon-btn {
+            width: 40px; height: 40px;
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: all 0.2s;
+        }
+        .header-icon-btn:active { transform: scale(0.93); }
+        .header-icon-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 11px; }
+        .notif-badge {
+            position: absolute; top: -4px; right: -4px;
+            width: 10px; height: 10px;
+            background: #ef4444; border-radius: 50%;
+            border: 2px solid #0F172A;
+            display: none;
+        }
+        /* Home quick actions row */
+        .home-quick-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; margin-bottom: 14px; position: relative; z-index: 1;
+        }
+        .home-quick-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px; padding: 12px 16px;
+            display: flex; align-items: center; gap: 10px;
+            cursor: pointer; transition: all 0.2s; border: none;
+            box-shadow: 0 4px 15px rgba(91,95,255,0.3);
+        }
+        .home-quick-btn:active { transform: scale(0.96); }
+        .home-quick-btn.withdraw-btn {
+            background: linear-gradient(135deg, #1a2a4a, #0d1f3c);
+            border: 1px solid rgba(0,229,255,0.3);
+            box-shadow: 0 4px 15px rgba(0,229,255,0.1);
+        }
+        .home-quick-btn .q-icon { font-size: 20px; }
+        .home-quick-btn .q-text { color: white; font-weight: 700; font-size: 14px; font-family: 'Poppins', sans-serif; }
+        .home-quick-btn .q-sub { color: rgba(255,255,255,0.6); font-size: 11px; }
+        /* Balance row below slider */
+        .home-bal-row {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 10px; margin: 10px 16px 0; position: relative; z-index: 1;
+        }
+        .home-bal-card {
+            background: var(--card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+        }
+        .home-bal-label { color: var(--text-muted); font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .home-bal-val { color: white; font-size: 20px; font-weight: 800; margin-top: 3px; font-family: 'Poppins', sans-serif; }
+        .home-bal-val .sym { color: var(--accent); font-size: 14px; }
+
+        /* Page header */
+        .page-header {
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 100%);
+            padding: 18px 18px 22px;
+            display: flex; align-items: center; gap: 12px;
+            border-radius: 0 0 22px 22px;
+            margin-bottom: -8px;
+            position: relative; z-index: 2;
+            border-bottom: 1px solid rgba(91,95,255,0.15);
+        }
+        .page-header h2 { color: white; font-size: 19px; font-weight: 700; flex: 1; font-family: 'Poppins', sans-serif; }
+        .back-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: white; border: none;
+            transition: all 0.2s;
+        }
+        .back-btn:active { transform: scale(0.95); }
+        .menu-btn {
+            width: 38px; height: 38px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; color: white; border: none;
+        }
+
+        /* ===== REFRESH BUTTON ===== */
+        #refresh-btn {
+            position: fixed;
+            top: 14px; right: 14px;
+            width: 38px; height: 38px;
+            background: rgba(91,95,255,0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(91,95,255,0.5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 150;
+            box-shadow: 0 4px 15px rgba(91,95,255,0.4);
+            transition: all 0.3s;
+        }
+        #refresh-btn:active { transform: rotate(180deg); }
+
+        /* ===== SLIDER ===== */
+        .slider-wrap { position: relative; overflow: hidden; border-radius: 18px; margin: 14px 16px 0; height: 160px; }
+        .slider-track { display: flex; transition: transform 0.5s ease; height: 100%; }
+        .slide {
+            min-width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1a1040, #0d1a2b);
+            border-radius: 18px;
+            overflow: hidden; cursor: pointer;
+        }
+        .slide img { width: 100%; height: 100%; object-fit: cover; }
+        .slide-placeholder {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #1a1040, #0d1a2b);
+            color: rgba(255,255,255,0.4);
+        }
+        .slider-dots {
+            position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 6px;
+        }
+        .slider-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.35);
+            transition: all 0.3s;
+        }
+        .slider-dot.active { background: var(--accent); width: 18px; border-radius: 3px; }
+
+        /* ===== TICKER ===== */
+        .ticker-wrap {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            margin: 14px 16px 0;
+            border-radius: 12px;
+            padding: 10px 16px;
+            overflow: hidden; display: flex; align-items: center; gap: 10px;
+        }
+        .ticker-label {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+        .ticker-text-wrap { overflow: hidden; flex: 1; }
+        .ticker-text {
+            white-space: nowrap;
+            color: rgba(255,255,255,0.8);
+            font-size: 13px;
+            font-weight: 500;
+            animation: tickerMove 20s linear infinite;
+            display: inline-block;
+        }
+        @keyframes tickerMove { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+
+        /* ===== WITHDRAW TICKER ===== */
+        .withdraw-ticker {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 14px 16px 0;
+        }
+        .withdraw-ticker-header {
+            background: linear-gradient(135deg, rgba(91,95,255,0.3), rgba(156,108,255,0.2));
+            padding: 10px 16px;
+            color: white; font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px;
+            font-family: 'Poppins', sans-serif;
+        }
+        .withdraw-ticker-body { height: 120px; overflow: hidden; position: relative; }
+        .withdraw-ticker-track { animation: scrollUp 12s linear infinite; }
+        @keyframes scrollUp { 0% { transform: translateY(0); } 100% { transform: translateY(-50%); } }
+        .withdraw-ticker-item {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px;
+        }
+        .wtick-left { display: flex; align-items: center; gap: 10px; }
+        .wtick-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px; color: white;
+        }
+        .wtick-name { font-weight: 600; color: var(--text); font-size: 13px; }
+        .wtick-method { color: var(--text-muted); font-size: 11px; }
+        .wtick-right { text-align: right; }
+        .wtick-amount { font-weight: 800; color: #10b981; font-size: 14px; }
+        .wtick-status { font-size: 10px; color: #10b981; font-weight: 600; }
+
+        /* ===== INVESTMENT PLANS ===== */
+        .plans-section { margin: 14px 16px 0; }
+        .plans-section-title {
+            font-size: 15px; font-weight: 700;
+            color: white; margin-bottom: 12px;
+            display: flex; align-items: center; justify-content: space-between;
+            font-family: 'Poppins', sans-serif;
+        }
+        .plans-grid { display: flex; flex-direction: column; gap: 16px; }
+        .plan-card {
+            background: var(--card);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            overflow: hidden;
+            transition: all 0.2s;
+            box-shadow: 0 6px 30px rgba(0,0,0,0.25);
+        }
+        .plan-card:active { transform: scale(0.98); }
+        .plan-card.owned { border-color: rgba(0,229,255,0.4); box-shadow: 0 0 30px rgba(0,229,255,0.12); }
+        .plan-slider { height: 180px; position: relative; overflow: hidden; }
+        .plan-slider-track { display: flex; height: 100%; transition: transform 0.5s; }
+        .plan-slide { min-width: 100%; height: 100%; }
+        .plan-slide img { width: 100%; height: 100%; object-fit: cover; }
+        .plan-slide-placeholder {
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(91,95,255,0.3), rgba(0,229,255,0.2));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 56px;
+        }
+        .plan-body { padding: 18px; }
+        .plan-header-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .plan-price { font-size: 28px; font-weight: 900; color: var(--accent); font-family: 'Poppins', sans-serif; }
+        .plan-name-badge { font-size: 12px; font-weight: 700; color: var(--primary); background: rgba(91,95,255,0.15); border: 1px solid rgba(91,95,255,0.3); padding: 4px 12px; border-radius: 20px; }
+        .plan-info-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+        .plan-info-item { text-align: center; background: rgba(255,255,255,0.04); border-radius: 12px; padding: 10px 6px; border: 1px solid rgba(255,255,255,0.06); }
+        .plan-info-val { font-size: 16px; font-weight: 800; color: white; }
+        .plan-info-lbl { font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+        .plan-btns { display: flex; gap: 10px; margin-top: 4px; }
+        .plan-btn {
+            flex: 1; padding: 8px 4px; border-radius: 10px; border: none;
+            font-size: 11px; font-weight: 700; cursor: pointer;
+            font-family: 'Poppins', sans-serif; transition: all 0.2s;
+        }
+        .plan-btn.buy { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; }
+        .plan-btn.unlock { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .plan-btn.view { background: rgba(0,229,255,0.15); color: var(--accent); border: 1px solid rgba(0,229,255,0.3); }
+        .plan-btn:active { transform: scale(0.95); }
+
+        /* ===== TASK PAGE ===== */
+        .task-item {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+            backdrop-filter: blur(10px);
+        }
+        .task-left { display: flex; align-items: center; gap: 12px; }
+        .task-icon { width: 46px; height: 46px; border-radius: 12px; background: rgba(91,95,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .task-name { font-weight: 700; color: white; font-size: 14px; }
+        .task-reward { font-size: 12px; color: var(--accent); font-weight: 600; margin-top: 2px; }
+
+        /* ===== SPLASH SCREEN ===== */
+        #splash-screen {
+            display: flex;
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 50%, #0d0d2b 100%);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 20px;
+            transition: opacity 0.5s ease;
+        }
+        #splash-screen.fade-out { opacity: 0; pointer-events: none; }
+        .splash-logo-wrap {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .splash-pulse-ring {
+            position: absolute;
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            border: 2px solid rgba(91,95,255,0.4);
+            animation: splashPulse 1.5s ease-out infinite;
+        }
+        .splash-pulse-ring:nth-child(2) { animation-delay: 0.5s; border-color: rgba(0,229,255,0.3); }
+        .splash-pulse-ring:nth-child(3) { animation-delay: 1s; border-color: rgba(156,108,255,0.3); }
+        @keyframes splashPulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+        .splash-logo-circle {
+            width: 90px; height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px;
+            box-shadow: 0 0 40px rgba(91,95,255,0.6), 0 0 80px rgba(0,229,255,0.2);
+            animation: splashGlow 1.5s ease-in-out infinite alternate;
+            z-index: 1;
+        }
+        @keyframes splashGlow {
+            0% { box-shadow: 0 0 30px rgba(91,95,255,0.5), 0 0 60px rgba(0,229,255,0.1); }
+            100% { box-shadow: 0 0 60px rgba(91,95,255,0.9), 0 0 100px rgba(0,229,255,0.3); }
+        }
+        .splash-title { color: white; font-size: 28px; font-weight: 900; letter-spacing: 1px; font-family: 'Poppins', sans-serif; }
+        .splash-title span { color: var(--accent); }
+        .splash-tagline { color: rgba(255,255,255,0.5); font-size: 13px; font-weight: 500; }
+        .splash-dots { display: flex; gap: 8px; }
+        .splash-dot {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: rgba(91,95,255,0.4);
+            animation: splashDotBounce 1.2s ease-in-out infinite;
+        }
+        .splash-dot:nth-child(1) { animation-delay: 0s; }
+        .splash-dot:nth-child(2) { animation-delay: 0.2s; }
+        .splash-dot:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes splashDotBounce {
+            0%,80%,100% { transform: scale(1); background: rgba(91,95,255,0.4); }
+            40% { transform: scale(1.5); background: var(--primary); }
+        }
+
+        /* ===== TIMER OVERLAY ===== */
+        #timer-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.88);
+            z-index: 500;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 20px;
+        }
+        .timer-circle {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 42px; font-weight: 900; color: white;
+            box-shadow: 0 0 40px rgba(91,95,255,0.5);
+            animation: pulse 1s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+        .timer-text { color: white; font-size: 16px; font-weight: 600; }
+        #timer-close-btn {
+            display: none;
+            background: #ef4444; color: white;
+            width: 60px; height: 60px;
+            border-radius: 50%;
+            font-size: 24px; font-weight: 800;
+            align-items: center; justify-content: center;
+            cursor: pointer; border: none;
+            box-shadow: 0 4px 20px rgba(239,68,68,0.5);
+        }
+
+        /* ===== BALANCE CARD ===== */
+        .balance-card {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 22px;
+            padding: 24px;
+            margin: 0 16px 16px;
+            position: relative; overflow: hidden;
+            box-shadow: 0 10px 30px rgba(91,95,255,0.4);
+        }
+        .balance-card::before {
+            content: '';
+            position: absolute; top: -30px; right: -30px;
+            width: 130px; height: 130px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.1);
+        }
+        .balance-card::after {
+            content: '';
+            position: absolute; bottom: -40px; left: -20px;
+            width: 100px; height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.07);
+        }
+        .balance-label { color: rgba(255,255,255,0.7); font-size: 13px; font-weight: 600; position: relative; z-index: 1; }
+        .balance-amount { color: white; font-size: 42px; font-weight: 900; position: relative; z-index: 1; line-height: 1; font-family: 'Poppins', sans-serif; }
+        .balance-taka { font-size: 24px; }
+        .balance-sub { color: rgba(255,255,255,0.6); font-size: 12px; font-weight: 600; margin-top: 4px; position: relative; z-index: 1; }
+
+        /* ===== EP CARD ===== */
+        .ep-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title {
+            font-size: 15px; font-weight: 700;
+            color: white;
+            padding: 0 16px;
+            margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* ===== LEADERBOARD ===== */
+        .lb-item {
+            display: flex; align-items: center; gap: 12px;
+            padding: 10px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        .lb-rank {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px; color: white;
+            flex-shrink: 0;
+        }
+        .lb-rank.gold { background: linear-gradient(135deg, #FFCA28, #FF8F00); color: #2a1804; }
+        .lb-rank.silver { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #1e293b; }
+        .lb-rank.bronze { background: linear-gradient(135deg, #d97706, #92400e); color: white; }
+        .lb-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: rgba(91,95,255,0.2); }
+        .lb-name { font-weight: 700; font-size: 14px; flex: 1; color: white; }
+        .lb-earned { font-weight: 800; color: var(--accent); font-size: 14px; }
+        .lb-uid { font-size: 10px; color: var(--text-muted); }
+
+        /* ===== OFFERS ===== */
+        .offer-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            overflow: hidden; margin: 0 16px 14px;
+        }
+        .offer-img { width: 100%; height: 140px; object-fit: cover; background: linear-gradient(135deg, rgba(91,95,255,0.3), rgba(0,229,255,0.1)); }
+        .offer-body { padding: 14px 16px; }
+        .offer-title { font-weight: 700; font-size: 15px; color: white; margin-bottom: 4px; }
+        .offer-desc { font-size: 13px; color: var(--text-muted); }
+        .offer-link { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 700; color: var(--accent); text-decoration: none; }
+
+        /* ===== RULES ===== */
+        .rule-item {
+            display: flex; gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            align-items: flex-start;
+        }
+        .rule-bullet {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--primary); margin-top: 7px; flex-shrink: 0;
+        }
+        .rule-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+
+        /* ===== PROFILE ===== */
+        .profile-banner {
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 100%);
+            padding: 10px 16px 24px; text-align: center; position: relative;
+        }
+        .profile-avatar-wrap { position: relative; display: inline-block; margin-bottom: 12px; }
+        .profile-avatar {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 800; color: white;
+            border: 3px solid rgba(91,95,255,0.5);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(91,95,255,0.4);
+        }
+        .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .profile-edit-btn {
+            position: absolute; bottom: 0; right: 0;
+            width: 30px; height: 30px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border: 2px solid #0F172A;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+        }
+        .profile-name { color: white; font-weight: 800; font-size: 20px; font-family: 'Poppins', sans-serif; }
+        .profile-email { color: var(--text-muted); font-size: 13px; }
+        .profile-stats {
+            margin: -12px 16px 16px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 18px;
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 8px; text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        .profile-stat-val { font-size: 18px; font-weight: 900; color: var(--accent); font-family: 'Poppins', sans-serif; }
+        .profile-stat-label { font-size: 10px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-top: 2px; }
+        .profile-menu-item {
+            width: 100%; padding: 16px 18px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .profile-menu-item:last-child { border-bottom: none; }
+        .profile-menu-item:hover { background: rgba(255,255,255,0.03); }
+        .profile-menu-icon {
+            width: 38px; height: 38px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            margin-right: 12px; font-size: 18px;
+        }
+        .profile-menu-label { font-weight: 700; color: white; font-size: 14px; }
+
+        /* ===== REFER ===== */
+        .refer-reward-banner {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            margin: 16px; border-radius: 18px;
+            padding: 20px; text-align: center;
+            box-shadow: 0 8px 20px rgba(91,95,255,0.3);
+        }
+        .refer-reward-val { font-size: 36px; font-weight: 900; color: white; font-family: 'Poppins', sans-serif; }
+        .refer-reward-label { color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 600; }
+
+        /* ===== POPUP NOTICE ===== */
+        #popup-notice {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 400;
+            align-items: center; justify-content: center;
+            padding: 20px;
+            backdrop-filter: blur(6px);
+        }
+        .popup-box {
+            background: linear-gradient(135deg, #1a1040, #0d1a2b);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 28px; width: 100%; max-width: 340px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            text-align: center; position: relative;
+        }
+        .popup-icon { width: 60px; height: 60px; background: linear-gradient(135deg,var(--primary),var(--secondary)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 28px; }
+        .popup-title { font-size: 18px; font-weight: 800; color: white; margin-bottom: 10px; font-family: 'Poppins', sans-serif; }
+        .popup-desc { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px; }
+        .popup-close-x { position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 16px; color: var(--text-muted); border: none; }
+
+        /* ===== BUTTONS ===== */
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); color: white; font-weight: 700; border-radius: 14px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+        .btn-primary:active { transform: scale(0.97); }
+        .btn-gold { background: linear-gradient(135deg, #FFCA28, #FF8F00); color: #2a1804; font-weight: 700; border-radius: 14px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+        .btn-gold:active { transform: scale(0.97); }
+        .btn-dark { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); color: white; font-weight: 700; border-radius: 14px; border: none; cursor: pointer; transition: all 0.2s; font-family: 'Poppins', sans-serif; }
+        .btn-dark:active { transform: scale(0.97); }
+        .btn-neon { background: linear-gradient(135deg, rgba(0,229,255,0.2), rgba(91,95,255,0.2)); border: 1px solid rgba(0,229,255,0.4); color: var(--accent); font-weight: 700; border-radius: 14px; cursor: pointer; transition: all 0.2s; }
+        .btn-red { background: rgba(239,68,68,0.15); color: #ef4444; font-weight: 700; border-radius: 14px; border: 1px solid rgba(239,68,68,0.3); cursor: pointer; }
+
+        /* ===== INPUTS ===== */
+        .ep-input {
+            width: 100%; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.12); border-radius: 14px;
+            padding: 14px 16px; font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            color: white; transition: border-color 0.2s;
+            outline: none;
+        }
+        .ep-input:focus { border-color: var(--primary); }
+        .ep-input::placeholder { color: rgba(255,255,255,0.35); }
+        .ep-input option { background: #1a1040; color: white; }
+        .input-with-icon { position: relative; }
+        .input-with-icon .ep-input { padding-left: 44px; }
+        .input-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+
+        /* ===== PAGE TRANSITIONS ===== */
+        .sub-page { display: none; min-height: 100vh; }
+        .sub-page.active { display: block; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        .main-page { display: none; }
+        .main-page.active { display: block; }
+
+        /* ===== AUTH ===== */
+        #auth-section {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 50%, #0d1a2b 100%);
+            z-index: 100;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 40px 30px;
+        }
+        #auth-section.hidden-page { display: none; }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { display: none; }
+
+        /* ===== ALERT ===== */
+        #custom-alert {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(6px);
+            z-index: 600;
+            align-items: center; justify-content: center; padding: 20px;
+        }
+        #custom-alert.show { display: flex; }
+        .alert-box {
+            background: linear-gradient(135deg, #1a1040, #0d1a2b);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 28px; width: 100%; max-width: 300px;
+            text-align: center;
+        }
+        .alert-icon { width: 60px; height: 60px; background: rgba(91,95,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+        #alert-message { color: white; }
+
+        /* ===== LOADER ===== */
+        #loader {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(13,13,43,0.85); backdrop-filter: blur(4px);
+            z-index: 700;
+            align-items: center; justify-content: center;
+        }
+        #loader.show { display: flex; }
+        .spin { width: 50px; height: 50px; border: 3px solid rgba(91,95,255,0.2); border-top-color: var(--primary); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== STATUS CHIPS ===== */
+        .chip-pending { background: rgba(245,158,11,0.2); color: #fbbf24; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(245,158,11,0.3); }
+        .chip-approved { background: rgba(16,185,129,0.2); color: #34d399; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.3); }
+        .chip-rejected { background: rgba(239,68,68,0.2); color: #f87171; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(239,68,68,0.3); }
+
+        /* ===== TASK RULES BOX ===== */
+        .task-rules-box {
+            background: rgba(91,95,255,0.1);
+            border: 1px solid rgba(91,95,255,0.25);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .task-rules-title { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .task-rule-row { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
+        .task-limit-box {
+            background: rgba(0,229,255,0.08);
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            font-size: 13px; font-weight: 700; color: var(--accent);
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* ===== TELEGRAM SUPPORT ===== */
+        #telegram-support-btn {
+            position: fixed;
+            bottom: 80px; right: 16px;
+            width: 52px; height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #229ED9, #1a7aab);
+            display: none;
+            align-items: center; justify-content: center;
+            box-shadow: 0 6px 20px rgba(34,158,217,0.5);
+            cursor: pointer; z-index: 90;
+            font-size: 24px;
+            animation: tgFloat 3s ease-in-out infinite;
+        }
+        @keyframes tgFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+
+        /* ===== MAINTENANCE PAGE ===== */
+        #maintenance-page {
+            display: none;
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #0d0d2b 0%, #1a1040 100%);
+            z-index: 9998;
+            flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 30px; text-align: center;
+        }
+        .maintenance-icon { font-size: 72px; margin-bottom: 20px; animation: maintSpin 4s linear infinite; }
+        @keyframes maintSpin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+        .maintenance-title { color: var(--accent); font-size: 26px; font-weight: 900; margin-bottom: 12px; font-family: 'Poppins', sans-serif; }
+        .maintenance-msg { color: rgba(255,255,255,0.6); font-size: 15px; font-weight: 500; line-height: 1.7; }
+
+        /* ===== WITHDRAWAL RULES BOX ===== */
+        .withdrawal-rules-box {
+            background: rgba(91,95,255,0.08);
+            border: 1px solid rgba(91,95,255,0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .withdrawal-rules-title { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+        .withdrawal-rule-row { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
+
+        /* ===== DEPOSIT RULES BOX ===== */
+        .deposit-rules-box {
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .deposit-rules-title { font-size: 13px; font-weight: 800; color: var(--accent); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .deposit-rule-row { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
+
+        /* ===== PAYMENT METHOD CARDS ===== */
+        .payment-method-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+        .payment-method-card {
+            background: var(--card);
+            border: 2px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px 12px;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+        }
+        .payment-method-card.selected { border-color: var(--primary); background: rgba(91,95,255,0.15); }
+        .payment-method-card .pm-icon { font-size: 28px; margin-bottom: 6px; display:flex; align-items:center; justify-content:center; min-height:44px; }
+        .payment-method-card .pm-name { font-size: 13px; font-weight: 700; color: white; }
+
+        /* ===== AMOUNT GRID ===== */
+        .amount-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        .amount-chip {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 10px 6px;
+            text-align: center; cursor: pointer; transition: all 0.2s;
+            font-size: 13px; font-weight: 700; color: white;
+        }
+        .amount-chip.selected { background: rgba(91,95,255,0.2); border-color: var(--primary); color: var(--accent); }
+        .amount-chip:active { transform: scale(0.95); }
+
+        /* ===== WALLET ADDRESS BOX ===== */
+        .wallet-addr-box {
+            background: rgba(0,229,255,0.06);
+            border: 1px solid rgba(0,229,255,0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+        .wallet-addr-label { font-size: 11px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+        .wallet-addr-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .wallet-addr-val { font-size: 13px; font-weight: 600; color: var(--accent); word-break: break-all; flex: 1; }
+        .copy-addr-btn {
+            width: 34px; height: 34px;
+            background: rgba(0,229,255,0.15);
+            border: 1px solid rgba(0,229,255,0.3);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; flex-shrink: 0; color: var(--accent);
+            font-size: 16px; transition: all 0.2s;
+        }
+        .copy-addr-btn:active { transform: scale(0.95); }
+
+        /* ===== REFERRAL RULES BOX ===== */
+        .referral-rules-box {
+            background: rgba(16,185,129,0.08);
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .referral-rules-title { font-size: 13px; font-weight: 800; color: #34d399; margin-bottom: 8px; }
+        .referral-rule-row { font-size: 12px; color: rgba(52,211,153,0.8); margin-bottom: 4px; display: flex; align-items: flex-start; gap: 6px; }
+        .referral-total-earnings {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(91,95,255,0.3);
+        }
+        .referral-total-earnings .val { font-size: 28px; font-weight: 900; color: white; font-family: 'Poppins', sans-serif; }
+        .referral-total-earnings .lbl { font-size: 12px; color: rgba(255,255,255,0.7); font-weight: 600; margin-top: 2px; }
+
+        /* ===== REFERRAL TASKS ===== */
+        .referral-task-item {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .ref-task-progress { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+        .ref-task-bar { height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 6px; }
+        .ref-task-bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); border-radius: 2px; transition: width 0.5s; }
+
+        /* ===== AUTH SLIDER ===== */
+        #auth-slider-wrap {
+            width: 100%; max-width: 380px;
+            border-radius: 16px; overflow: hidden;
+            margin-bottom: 24px;
+            height: 150px;
+            position: relative;
+        }
+        #auth-slider-track { display: flex; transition: transform 0.5s ease; height: 100%; }
+        .auth-slide {
+            min-width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(91,95,255,0.3), rgba(0,229,255,0.1));
+            overflow: hidden; border-radius: 16px;
+        }
+        .auth-slide img { width:100%; height:100%; object-fit: cover; }
+        .auth-slide-placeholder {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            font-size: 40px;
+        }
+        #auth-slider-dots { display: flex; gap: 5px; justify-content: center; margin-top: 8px; margin-bottom: 8px; }
+        .auth-dot { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.3); transition: all 0.3s; }
+        .auth-dot.active { background: var(--primary); width: 14px; border-radius: 3px; }
+
+        /* ===== ACTIVE PLANS PAGE ===== */
+        .active-plan-card {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 16px;
+            margin-bottom: 14px;
+        }
+        .active-plan-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+        .active-plan-name { font-weight: 800; font-size: 15px; color: white; font-family: 'Poppins', sans-serif; }
+        .active-plan-badge { background: rgba(16,185,129,0.2); color: #34d399; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; border: 1px solid rgba(16,185,129,0.3); }
+        .active-plan-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 10px; }
+        .active-plan-stat { text-align: center; padding: 10px; background: rgba(255,255,255,0.04); border-radius: 10px; }
+        .active-plan-val { font-size: 14px; font-weight: 800; color: var(--accent); }
+        .active-plan-lbl { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+
+        /* ===== LANGUAGE SELECTOR ===== */
+        .lang-selector {
+            display: flex; gap: 10px; margin-bottom: 14px;
+        }
+        .lang-btn {
+            flex: 1; padding: 12px; border-radius: 12px;
+            background: var(--card); border: 1px solid var(--card-border);
+            color: white; font-weight: 700; cursor: pointer;
+            transition: all 0.2s; font-size: 14px;
+        }
+        .lang-btn.active { background: rgba(91,95,255,0.2); border-color: var(--primary); color: var(--accent); }
+
+        /* ===== PAGE CONTENT ===== */
+        .page-content { padding-bottom: 24px; }
+
+        /* ===== NOTIF CARD ===== */
+        .notif-card { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; }
+        .notif-card.personal { border-left: 3px solid var(--secondary); }
+        .notif-card.global { border-left: 3px solid var(--accent); }
+
+        /* ===== ABOUT US ===== */
+        .about-section { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+        .about-content { font-size: 14px; color: var(--text-muted); line-height: 1.7; }
+
+        /* ===== DIVIDER ===== */
+        .ep-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 0; }
+
+        /* ===== HIDDEN CLASS ===== */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+<div class="app-wrap">
+
+    <!-- Refresh Button -->
+    <div id="refresh-btn" onclick="location.reload()">
+        <i data-lucide="refresh-cw" style="width:18px;height:18px;color:white"></i>
+    </div>
+
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="splash-logo-wrap">
+            <div class="splash-pulse-ring"></div>
+            <div class="splash-pulse-ring"></div>
+            <div class="splash-pulse-ring"></div>
+            <div class="splash-logo-circle">💰</div>
+        </div>
+        <div class="splash-title">Earnplus <span>$</span></div>
+        <div class="splash-tagline">Earn money, withdraw anytime!</div>
+        <div class="splash-dots">
+            <div class="splash-dot"></div>
+            <div class="splash-dot"></div>
+            <div class="splash-dot"></div>
+        </div>
+    </div>
+
+    <!-- Maintenance Page -->
+    <div id="maintenance-page">
+        <div class="maintenance-icon">⚙️</div>
+        <div class="maintenance-title">Under Maintenance</div>
+        <div class="maintenance-msg" id="maintenance-msg">We are currently upgrading our system. Please check back shortly.</div>
+    </div>
+
+    <!-- Loader -->
+    <div id="loader"><div class="spin"></div></div>
+
+    <!-- Telegram Support Button (Home only) -->
+    <div id="telegram-support-btn" onclick="openTelegramSupport()">✈️</div>
+
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-avatar" id="sb-avatar-wrap">
+                <span id="sb-avatar-letter">U</span>
+            </div>
+            <div class="sidebar-name" id="sb-name">Loading...</div>
+            <div class="sidebar-email" id="sb-email">UID: ...</div>
+        </div>
+        <div class="sidebar-nav">
+            <div class="sidebar-item active" data-page="home-page" onclick="sidebarNav('home-page')">
+                <div class="s-icon">🏠</div> Home
+            </div>
+            <div class="sidebar-item" data-page="tasks-page" onclick="sidebarNav('tasks-page')">
+                <div class="s-icon">💼</div> Tasks
+            </div>
+            <div class="sidebar-item" data-page="active-plans-page" onclick="sidebarNav('active-plans-page')">
+                <div class="s-icon">📦</div> Active Plans
+            </div>
+            <div class="sidebar-item" data-page="deposit-page" onclick="sidebarNav('deposit-page')">
+                <div class="s-icon">💳</div> Deposit
+            </div>
+            <div class="sidebar-item" data-page="offers-page" onclick="sidebarNav('offers-page')">
+                <div class="s-icon">🎁</div> Promotion
+            </div>
+            <div class="sidebar-item" data-page="leaderboard-page" onclick="sidebarNav('leaderboard-page')">
+                <div class="s-icon">👑</div> Leaderboard
+            </div>
+            <div class="sidebar-item" data-page="wallet-page" onclick="sidebarNav('wallet-page')">
+                <div class="s-icon">💰</div> Wallet
+            </div>
+            <div class="sidebar-item" data-page="notifications-page" onclick="sidebarNav('notifications-page', true)">
+                <div class="s-icon">💬</div> Notifications
+            </div>
+            <div class="sidebar-item" data-page="refer-page" onclick="sidebarNav('refer-page')">
+                <div class="s-icon">🤝</div> Refer & Earn
+            </div>
+            <div class="sidebar-item" data-page="rules-page" onclick="sidebarNav('rules-page')">
+                <div class="s-icon">📜</div> Rules
+            </div>
+            <div class="sidebar-item" data-page="profile-page" onclick="sidebarNav('profile-page')">
+                <div class="s-icon">👤</div> Profile
+            </div>
+            <hr class="sidebar-divider">
+            <div class="sidebar-item" onclick="handleLogout()">
+                <div class="s-icon">🚪</div> Logout
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Section -->
+    <div id="auth-section">
+        <div style="text-align:center;margin-bottom:28px">
+            <div style="font-size:42px;margin-bottom:8px">💰</div>
+            <h1 style="font-size:30px;font-weight:900;color:white;margin:0;font-family:'Poppins',sans-serif">Earnplus <span style="color:var(--accent)">$</span></h1>
+            <p style="color:var(--text-muted);font-weight:500;margin:4px 0 0">Earn money, withdraw anytime!</p>
+        </div>
+        <div id="auth-slider-wrap">
+            <div id="auth-slider-track">
+                <div class="auth-slide"><div class="auth-slide-placeholder">🎉</div></div>
+            </div>
+        </div>
+        <div id="auth-slider-dots"></div>
+        <div id="login-view" style="width:100%;max-width:380px">
+            <input id="login-email" type="email" placeholder="Email Address" class="ep-input" style="margin-bottom:12px">
+            <div style="position:relative;margin-bottom:12px">
+                <input id="login-password" type="password" placeholder="Password" class="ep-input" style="padding-right:48px">
+                <button type="button" onclick="togglePwd('login-password','eye-login')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:var(--text-muted)">
+                    <svg id="eye-login" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
+            <div style="text-align:right;margin-bottom:16px">
+                <a href="#" id="show-forgot" style="color:var(--accent);font-size:13px;font-weight:600;text-decoration:none">🔑 Forgot Password?</a>
+            </div>
+            <button id="login-btn" class="btn-primary" style="padding:16px;font-size:16px;width:100%">Login</button>
+            <p style="text-align:center;margin-top:16px;color:var(--text-muted);font-size:14px">Don't have an account? <a href="#" id="show-signup" style="color:var(--accent);font-weight:700;text-decoration:none">Sign Up</a></p>
+        </div>
+        <div id="signup-view" class="hidden" style="width:100%;max-width:380px">
+            <input id="signup-name" type="text" placeholder="Full Name" class="ep-input" style="margin-bottom:12px">
+            <input id="signup-email" type="email" placeholder="Email Address" class="ep-input" style="margin-bottom:12px">
+            <div style="position:relative;margin-bottom:20px">
+                <input id="signup-password" type="password" placeholder="Password" class="ep-input" style="padding-right:48px">
+                <button type="button" onclick="togglePwd('signup-password','eye-signup')" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:0;color:var(--text-muted)">
+                    <svg id="eye-signup" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+            </div>
+            <button id="signup-btn" class="btn-primary" style="padding:16px;font-size:16px;width:100%">Create Account</button>
+            <p style="text-align:center;margin-top:16px;color:var(--text-muted);font-size:14px">Already have an account? <a href="#" id="show-login" style="color:var(--accent);font-weight:700;text-decoration:none">Login</a></p>
+        </div>
+        <!-- Forgot Password View -->
+        <div id="forgot-view" class="hidden" style="width:100%;max-width:380px">
+            <div style="text-align:center;margin-bottom:20px">
+                <div style="font-size:36px;margin-bottom:8px">🔑</div>
+                <div style="font-size:18px;font-weight:800;color:white;font-family:'Poppins',sans-serif">Password Reset</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Send a reset request to admin</div>
+            </div>
+            <input id="forgot-username" type="text" placeholder="Your Name / Username" class="ep-input" style="margin-bottom:12px">
+            <input id="forgot-uid" type="text" placeholder="Your UID / Numeric ID" class="ep-input" style="margin-bottom:12px">
+            <input id="forgot-email" type="email" placeholder="Registered Email" class="ep-input" style="margin-bottom:12px">
+            <textarea id="forgot-message" rows="3" placeholder="Describe your issue..." class="ep-input" style="margin-bottom:16px;resize:none"></textarea>
+            <button onclick="submitForgotRequest()" class="btn-primary" style="padding:16px;font-size:15px;width:100%">📨 Submit Reset Request</button>
+            <p style="text-align:center;margin-top:16px;color:var(--text-muted);font-size:14px"><a href="#" id="back-to-login" style="color:var(--accent);font-weight:600;text-decoration:none">← Back to Login</a></p>
+        </div>
+    </div>
+
+    <!-- App Container -->
+    <div id="app-container" class="main-page">
+
+        <!-- HOME PAGE -->
+        <div id="home-page" class="sub-page">
+            <div class="home-header">
+                <div class="header-top">
+                    <button class="menu-btn" onclick="openSidebar()">
+                        <i data-lucide="menu" style="width:20px;height:20px"></i>
+                    </button>
+                    <div style="color:white;font-size:16px;font-weight:800;font-family:'Poppins',sans-serif">Earnplus <span style="color:var(--accent)">$</span></div>
+                    <div class="header-actions">
+                        <div class="header-icon-btn" id="notif-btn" onclick="sidebarNav('notifications-page', true)">
+                            <i data-lucide="bell" style="width:18px;height:18px;color:white"></i>
+                            <div id="notification-dot" class="notif-badge"></div>
+                        </div>
+                        <div class="header-icon-btn" id="profile-btn-header" onclick="sidebarNav('profile-page')">
+                            <span id="hdr-avatar-letter" style="color:white;font-weight:800;font-size:14px">U</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Quick action buttons: Deposit + Withdraw -->
+                <div class="home-quick-row">
+                    <button class="home-quick-btn" onclick="sidebarNav('deposit-page')">
+                        <span class="q-icon">💳</span>
+                        <div>
+                            <div class="q-text">Deposit</div>
+                            <div class="q-sub">Add funds</div>
+                        </div>
+                    </button>
+                    <button class="home-quick-btn withdraw-btn" onclick="sidebarNav('wallet-page')">
+                        <span class="q-icon">💸</span>
+                        <div>
+                            <div class="q-text">Withdraw</div>
+                            <div class="q-sub">Cash out</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Slider -->
+            <div class="slider-wrap" id="home-slider-wrap">
+                <div class="slider-track" id="slider-track">
+                    <div class="slide"><div class="slide-placeholder"><div style="font-size:40px">🎉</div><div style="color:rgba(255,255,255,0.4);margin-top:8px;font-size:13px">Loading banners...</div></div></div>
+                </div>
+                <div class="slider-dots" id="slider-dots"></div>
+            </div>
+
+            <!-- Balance Row (below slider) -->
+            <div class="home-bal-row">
+                <div class="home-bal-card">
+                    <div class="home-bal-label">Total Balance</div>
+                    <div class="home-bal-val"><span id="coin-balance">0</span><span class="sym"> <span id="curr-sym-home">৳</span></span></div>
+                </div>
+                <div class="home-bal-card">
+                    <div class="home-bal-label">Today Earned</div>
+                    <div class="home-bal-val"><span id="today-earned-home">0</span><span class="sym"> <span id="curr-sym-home2">৳</span></span></div>
+                </div>
+            </div>
+
+            <!-- Notice Ticker -->
+            <div class="ticker-wrap" id="notice-ticker-wrap" style="margin-top:14px">
+                <span class="ticker-label">📢 Notice</span>
+                <div class="ticker-text-wrap">
+                    <span class="ticker-text" id="ticker-text">Welcome to Earnplus! Complete tasks and earn money daily.</span>
+                </div>
+            </div>
+
+            <!-- Investment Plans -->
+            <div class="plans-section" style="margin-top:14px">
+                <div class="plans-section-title">
+                    <span>🚀 Investment Plans</span>
+                    <span onclick="sidebarNav('active-plans-page')" style="font-size:12px;color:var(--accent);cursor:pointer">My Plans →</span>
+                </div>
+                <div class="plans-grid" id="plans-grid">
+                    <div style="text-align:center;color:var(--text-muted);font-size:12px;grid-column:span 2;padding:20px">Loading plans...</div>
+                </div>
+            </div>
+
+            <!-- Withdraw Ticker -->
+            <div class="withdraw-ticker" style="margin-bottom:20px">
+                <div class="withdraw-ticker-header">
+                    <span>💸</span> Live Recent Withdrawals
+                </div>
+                <div class="withdraw-ticker-body">
+                    <div class="withdraw-ticker-track" id="withdraw-ticker-track"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TASKS PAGE -->
+        <div id="tasks-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Task Categories</h2>
+            </div>
+            <div class="page-content" style="padding:16px">
+                <div style="background:rgba(91,95,255,0.1);border:1px solid rgba(91,95,255,0.25);border-radius:14px;padding:14px;margin-bottom:14px;font-size:13px;color:var(--text-muted)">
+                    💡 Buy an Investment Plan to unlock tasks and start earning daily.
+                </div>
+                <div id="tasks-plans-section">
+                    <div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CATEGORY TASKS PAGE -->
+        <div id="category-tasks-page" class="sub-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack('tasks-page')"><i data-lucide="arrow-left" style="width:18px;height:18px"></i></button>
+                <h2 id="category-page-title">Tasks</h2>
+            </div>
+            <div class="page-content" style="padding:16px">
+                <div id="category-tasks-list"></div>
+            </div>
+        </div>
+
+        <!-- ACTIVE PLANS PAGE -->
+        <div id="active-plans-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>My Active Plans</h2>
+            </div>
+            <div class="page-content" style="padding:16px" id="active-plans-list">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+            </div>
+        </div>
+
+        <!-- DEPOSIT PAGE -->
+        <div id="deposit-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Deposit</h2>
+            </div>
+            <div class="page-content" style="padding:16px">
+                <!-- Deposit Rules -->
+                <div class="deposit-rules-box" id="deposit-rules-box">
+                    <div class="deposit-rules-title">📋 Deposit Rules</div>
+                    <div id="deposit-rules-list">
+                        <div class="deposit-rule-row"><span>•</span><span>Loading...</span></div>
+                    </div>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div style="margin-bottom:16px">
+                    <div class="section-title" style="padding:0;margin-bottom:12px;font-size:14px">Select Payment Method</div>
+                    <div class="payment-method-grid" id="deposit-methods-grid">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+
+                <!-- Amount Selection -->
+                <div style="margin-bottom:16px" id="deposit-amount-section">
+                    <div class="section-title" style="padding:0;margin-bottom:12px;font-size:14px">Select Amount</div>
+                    <div class="amount-grid" id="deposit-amounts-grid">
+                        <!-- Filled by JS -->
+                    </div>
+                    <input type="number" id="deposit-custom-amount" class="ep-input" placeholder="Or enter custom amount">
+                </div>
+
+                <!-- Wallet Address -->
+                <div id="deposit-wallet-section" style="display:none;margin-bottom:16px">
+                    <div class="section-title" style="padding:0;margin-bottom:10px;font-size:14px">Wallet Address</div>
+                    <div id="deposit-wallet-addresses"></div>
+                </div>
+
+                <!-- TrxID Submit -->
+                <div style="margin-bottom:16px">
+                    <div class="section-title" style="padding:0;margin-bottom:10px;font-size:14px">Submit Transaction ID</div>
+                    <input type="text" id="deposit-trxid" class="ep-input" style="margin-bottom:12px" placeholder="Enter TrxID / TxID">
+                    <button class="btn-primary" style="width:100%;padding:16px;font-size:15px" onclick="submitDeposit()">Submit Deposit Request</button>
+                </div>
+
+                <!-- Deposit History -->
+                <div>
+                    <div class="section-title" style="padding:0;margin-bottom:10px;font-size:14px">Deposit History</div>
+                    <div id="deposit-history-list">
+                        <div style="text-align:center;padding:20px;color:var(--text-muted)">No deposits yet.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OFFERS PAGE -->
+        <div id="offers-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Promotion</h2>
+            </div>
+            <div class="page-content" style="padding-top:16px" id="offers-list">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading offers...</div>
+            </div>
+        </div>
+
+        <!-- LEADERBOARD PAGE -->
+        <div id="leaderboard-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Leaderboard</h2>
+            </div>
+            <div class="page-content">
+                <div id="leaderboard-list" style="padding:16px">
+                    <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WALLET PAGE -->
+        <div id="wallet-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>My Wallet</h2>
+            </div>
+            <div class="page-content" style="padding:16px">
+                <div class="balance-card" style="cursor:default">
+                    <div class="balance-label">Current Balance</div>
+                    <div class="balance-amount"><span id="wallet-coin-balance">0</span><span class="balance-taka" id="curr-sym-wallet">৳</span></div>
+                    <div class="balance-sub">Min withdraw: <span id="min-withdrawal-info">...</span></div>
+                </div>
+                <!-- Deposit required warning -->
+                <div id="deposit-required-notice" style="display:none;background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(239,68,68,0.05));border:1px solid rgba(239,68,68,0.4);border-radius:14px;padding:16px;margin-bottom:16px;text-align:center">
+                    <div style="font-size:24px;margin-bottom:6px">🔒</div>
+                    <div style="font-weight:800;color:#f87171;font-size:15px;margin-bottom:6px">Withdrawal Locked</div>
+                    <div style="font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6">You must make at least <strong style="color:#fbbf24">one deposit</strong> before you can withdraw. Please deposit first to unlock withdrawals.</div>
+                    <button onclick="sidebarNav('deposit-page')" class="btn-primary" style="margin-top:12px;padding:10px 24px;font-size:13px">➕ Go to Deposit</button>
+                </div>
+                <div class="withdrawal-rules-box" id="withdrawal-rules-box" style="display:none">
+                    <div class="withdrawal-rules-title">💡 Withdrawal Rules</div>
+                    <div id="withdrawal-rules-list"></div>
+                </div>
+                <div class="ep-card" style="padding:20px;margin-bottom:16px">
+                    <h3 style="font-weight:700;margin-bottom:14px;color:white;font-family:'Poppins',sans-serif">Withdraw Earnings</h3>
+                    <input id="withdraw-amount" type="number" placeholder="Enter amount" class="ep-input" style="margin-bottom:12px">
+                    <select id="withdraw-method" class="ep-input" style="margin-bottom:0"></select>
+                    <div id="payment-details-container">
+                        <div class="input-with-icon" style="margin-top:12px">
+                            <span class="input-icon">📱</span>
+                            <input id="payment-detail-input" type="text" placeholder="Enter phone number" class="ep-input">
+                        </div>
+                    </div>
+                    <button id="withdraw-btn" class="btn-primary" style="width:100%;padding:16px;margin-top:14px;font-size:15px">Request Withdrawal</button>
+                </div>
+                <div>
+                    <h3 style="font-weight:700;margin-bottom:10px;color:white;font-family:'Poppins',sans-serif">Withdrawal History</h3>
+                    <div id="withdrawal-history-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTIFICATIONS PAGE -->
+        <div id="notifications-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Notifications</h2>
+            </div>
+            <div class="page-content" style="padding:16px" id="notifications-list">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+            </div>
+        </div>
+
+        <!-- REFER PAGE -->
+        <div id="refer-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Refer & Earn</h2>
+            </div>
+            <div class="page-content" style="padding:16px">
+                <div class="refer-reward-banner">
+                    <div style="font-size:13px;color:rgba(255,255,255,0.65);font-weight:600;margin-bottom:4px">Earn Per Referral</div>
+                    <div class="refer-reward-val"><span id="referral-reward-amount">100</span><span id="curr-sym-refer">৳</span></div>
+                    <div class="refer-reward-label">Invite friends, both earn!</div>
+                </div>
+
+                <div class="referral-total-earnings" id="referral-total-earnings-box">
+                    <div class="lbl">Total Referral Earnings</div>
+                    <div class="val"><span id="total-referral-earnings">0</span><span id="curr-sym-ref-earn">৳</span></div>
+                </div>
+
+                <div class="referral-rules-box" id="referral-rules-box" style="display:none">
+                    <div class="referral-rules-title">📋 Referral Rules</div>
+                    <div id="referral-rules-list"></div>
+                </div>
+
+                <div class="ep-card" style="padding:20px;margin-bottom:14px;text-align:center">
+                    <div style="font-size:13px;color:var(--text-muted);font-weight:600;margin-bottom:8px">Total Referrals</div>
+                    <div style="font-size:42px;font-weight:900;color:white;font-family:'Poppins',sans-serif" id="total-referrals">0</div>
+                </div>
+
+                <div class="ep-card" style="padding:20px;margin-bottom:14px">
+                    <div style="font-size:13px;color:var(--text-muted);font-weight:600;margin-bottom:8px;text-align:center">Your Referral Code</div>
+                    <div style="background:rgba(255,255,255,0.05);border:2px dashed rgba(255,255,255,0.15);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                        <span id="referral-code" style="font-size:22px;font-weight:900;color:white;letter-spacing:3px;font-family:'Poppins',sans-serif">...</span>
+                        <button id="copy-code-btn" style="background:rgba(91,95,255,0.2);border:1px solid rgba(91,95,255,0.3);border-radius:10px;padding:8px;cursor:pointer">
+                            <i data-lucide="copy" style="width:18px;height:18px;color:var(--accent)"></i>
+                        </button>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);margin-bottom:6px">Your unique link:</div>
+                    <div style="font-size:11px;color:var(--accent);background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.2);padding:10px;border-radius:10px;word-break:break-all" id="referral-link">Loading...</div>
+                </div>
+
+                <button id="share-btn" class="btn-primary" style="width:100%;padding:16px;margin-bottom:14px;font-size:15px">Share Now</button>
+
+                <!-- Deposit Commission Info -->
+                <div id="deposit-commission-box" class="ep-card" style="padding:16px;margin-bottom:14px;display:none">
+                    <div style="font-size:14px;font-weight:700;color:white;margin-bottom:8px">💰 Deposit Commission</div>
+                    <div id="deposit-commission-info" style="font-size:13px;color:var(--text-muted)"></div>
+                </div>
+
+                <!-- Referral Tasks -->
+                <div id="referral-tasks-section" style="margin-bottom:14px">
+                    <div class="section-title" style="padding:0;margin-bottom:12px">🎯 Referral Tasks</div>
+                    <div id="referral-tasks-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RULES PAGE -->
+        <div id="rules-page" class="sub-page">
+            <div class="page-header">
+                <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                <h2>Rules</h2>
+            </div>
+            <div class="page-content">
+                <div class="ep-card" style="margin:16px;overflow:hidden">
+                    <div id="rules-list">
+                        <div style="padding:30px;text-align:center;color:var(--text-muted)">Loading rules...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROFILE PAGE -->
+        <div id="profile-page" class="sub-page">
+            <div class="profile-banner">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px">
+                    <button class="menu-btn" onclick="openSidebar()"><i data-lucide="menu" style="width:20px;height:20px"></i></button>
+                    <span style="color:white;font-weight:700;font-size:16px;font-family:'Poppins',sans-serif">My Profile</span>
+                </div>
+                <div style="text-align:center">
+                    <div class="profile-avatar-wrap">
+                        <div class="profile-avatar" id="profile-avatar-display">
+                            <span id="profile-avatar-letter">U</span>
+                        </div>
+                        <div class="profile-edit-btn" onclick="document.getElementById('profile-img-input').click()">
+                            <i data-lucide="camera" style="width:14px;height:14px;color:white"></i>
+                        </div>
+                    </div>
+                    <input type="file" id="profile-img-input" accept="image/*" style="display:none">
+                    <div class="profile-name" id="profile-name">User Name</div>
+                    <div id="profile-uid" style="color:rgba(255,255,255,0.6);font-size:12px;font-weight:700;letter-spacing:0.5px;background:rgba(91,95,255,0.2);padding:4px 14px;border-radius:20px;margin-top:6px;display:inline-block">USER ID: ...</div>
+                    <button id="remove-photo-btn" onclick="removeProfilePhoto()" style="display:none;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;margin-top:10px;cursor:pointer">Remove Photo</button>
+                </div>
+            </div>
+
+            <!-- Profile stats: 3 columns -->
+            <div class="profile-stats">
+                <div>
+                    <div class="profile-stat-val"><span id="profile-balance">0</span><span id="curr-sym-prof">৳</span></div>
+                    <div class="profile-stat-label">Balance</div>
+                </div>
+                <div>
+                    <div class="profile-stat-val" style="color:#34d399"><span id="profile-today-earned">0</span></div>
+                    <div class="profile-stat-label">Today Earned</div>
+                </div>
+                <div>
+                    <div class="profile-stat-val" style="color:#fbbf24"><span id="profile-deposit-amount">0</span></div>
+                    <div class="profile-stat-label">Deposited</div>
+                </div>
+            </div>
+
+            <div style="padding:0 16px 16px">
+                <div class="ep-card" style="overflow:hidden;margin-bottom:14px">
+                    <!-- Recharge/Deposit -->
+                    <button onclick="sidebarNav('deposit-page')" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(91,95,255,0.15)">💳</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Deposit</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Withdraw -->
+                    <button onclick="sidebarNav('wallet-page')" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(0,229,255,0.1)">💸</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Withdraw</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Withdraw Record -->
+                    <button onclick="showWithdrawRecord()" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(16,185,129,0.1)">📋</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Withdraw Record</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Deposit Record -->
+                    <button onclick="showDepositRecord()" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(245,158,11,0.1)">📥</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Deposit Record</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Forgot Password -->
+                    <button onclick="forgotPassword()" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(59,130,246,0.15)">🔑</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Forgot Password</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Join Telegram -->
+                    <button onclick="joinTelegramGroup()" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(34,158,217,0.1)">✈️</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Join Telegram Group</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- About Us -->
+                    <button onclick="sidebarNav('about-page')" class="profile-menu-item">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(156,108,255,0.1)">ℹ️</div>
+                            <span class="profile-menu-label" style="margin-left:12px">About Us</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                    <!-- Download App -->
+                    <button onclick="downloadApp()" class="profile-menu-item" id="download-app-btn" style="display:none">
+                        <div style="display:flex;align-items:center;gap:0">
+                            <div class="profile-menu-icon" style="background:rgba(0,229,255,0.1)">📱</div>
+                            <span class="profile-menu-label" style="margin-left:12px">Download App</span>
+                        </div>
+                        <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--text-muted)"></i>
+                    </button>
+                </div>
+
+                <button id="logout-btn" class="btn-red" style="width:100%;padding:16px;font-size:15px;display:flex;align-items:center;justify-content:center;gap:10px">
+                    <i data-lucide="log-out" style="width:18px;height:18px"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- ABOUT PAGE -->
+        <div id="about-page" class="sub-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack('profile-page')"><i data-lucide="arrow-left" style="width:18px;height:18px"></i></button>
+                <h2>About Us</h2>
+            </div>
+            <div class="page-content" style="padding:16px" id="about-content-section">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+            </div>
+        </div>
+
+        <!-- WITHDRAW RECORD PAGE -->
+        <div id="withdraw-record-page" class="sub-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack('profile-page')"><i data-lucide="arrow-left" style="width:18px;height:18px"></i></button>
+                <h2>Withdraw Record</h2>
+            </div>
+            <div class="page-content" style="padding:16px" id="withdraw-record-list">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+            </div>
+        </div>
+
+        <!-- DEPOSIT RECORD PAGE -->
+        <div id="deposit-record-page" class="sub-page">
+            <div class="page-header">
+                <button class="back-btn" onclick="goBack('profile-page')"><i data-lucide="arrow-left" style="width:18px;height:18px"></i></button>
+                <h2>Deposit Record</h2>
+            </div>
+            <div class="page-content" style="padding:16px" id="deposit-record-list">
+                <div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>
+            </div>
+        </div>
+
+    </div><!-- /app-container -->
+
+    <!-- Timer Overlay -->
+    <div id="timer-overlay">
+        <div style="font-size:15px;color:rgba(255,255,255,0.7);font-weight:600">Please wait...</div>
+        <div class="timer-circle" id="timer-display">15</div>
+        <div class="timer-text" id="timer-task-name">Task</div>
+        <button id="timer-close-btn" onclick="claimTaskReward()">✕</button>
+    </div>
+
+    <!-- Popup Notice -->
+    <div id="popup-notice">
+        <div class="popup-box">
+            <button class="popup-close-x" onclick="closePopup()">✕</button>
+            <div class="popup-icon" id="popup-icon">📢</div>
+            <div class="popup-title" id="popup-title">Notice</div>
+            <div class="popup-desc" id="popup-desc">Loading...</div>
+            <button class="btn-primary" style="width:100%;padding:14px;font-size:15px" onclick="closePopup()">✅ Okay</button>
+        </div>
+    </div>
+
+    <!-- Custom Alert -->
+    <div id="custom-alert">
+        <div class="alert-box">
+            <div class="alert-icon"><i data-lucide="info" style="width:28px;height:28px;color:var(--accent)"></i></div>
+            <p id="alert-message" style="font-weight:600;margin-bottom:16px;font-size:15px"></p>
+            <button id="alert-ok-btn" class="btn-primary" style="width:100%;padding:12px">Okay</button>
+        </div>
+    </div>
+
+</div><!-- /app-wrap -->
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyARJgpEsdK2vr0gha5_1vDUdakE4OpQbvE",
+  authDomain: "bdzone-70a26.firebaseapp.com",
+  databaseURL: "https://bdzone-70a26-default-rtdb.firebaseio.com",
+  projectId: "bdzone-70a26",
+  storageBucket: "bdzone-70a26.firebasestorage.app",
+  messagingSenderId: "172711541080",
+  appId: "1:172711541080:web:4a38ee477d0fc8d9fe0d2d"
+};
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy, limit, increment, deleteDoc } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
+import { getDatabase, ref, onValue, get } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const rtdb = getDatabase(app);
+
+let currentUser = null;
+let userData = {};
+let appConfig = {};
+let currentTaskReward = 0;
+let currentTaskRef = null;
+let timerInterval = null;
+let selectedDepositMethod = '';
+let selectedDepositAmount = 0;
+let appCurrency = 'BDT'; // BDT or USD
+let currencySymbol = '৳';
+let currentLanguage = localStorage.getItem('ep_lang') || 'en';
+
+const loader = document.getElementById('loader');
+
+// === HELPERS ===
+function showLoader() { loader.classList.add('show'); }
+function hideLoader() { loader.classList.remove('show'); }
+
+function showAlert(msg) {
+    document.getElementById('alert-message').textContent = msg;
+    document.getElementById('custom-alert').classList.add('show');
+    document.getElementById('alert-ok-btn').onclick = () => document.getElementById('custom-alert').classList.remove('show');
+}
+window.showAlert = showAlert;
+
+function getToday() { return new Date().toISOString().split('T')[0]; }
+
+function setEl(id, val, prop = 'textContent') {
+    const el = document.getElementById(id);
+    if (el) el[prop] = val;
+}
+
+// === CURRENCY ===
+function updateCurrencySymbols() {
+    const sym = currencySymbol;
+    document.querySelectorAll('.curr-sym').forEach(el => el.textContent = sym);
+    setEl('curr-sym-home', sym);
+    setEl('curr-sym-home2', sym);
+    setEl('curr-sym-wallet', sym);
+    setEl('curr-sym-prof', sym);
+    setEl('curr-sym-refer', sym);
+    setEl('curr-sym-ref-earn', sym);
+}
+
+// === PASSWORD SHOW/HIDE ===
+window.togglePwd = function(inputId, iconId) {
+    const input = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+    if (!input) return;
+    if (input.type === 'password') {
+        input.type = 'text';
+        // Eye-off icon
+        icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>';
+    } else {
+        input.type = 'password';
+        // Eye icon
+        icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+    }
+};
+
+// === AUTH ===
+window.onload = () => {
+    setTimeout(() => {
+        const splash = document.getElementById('splash-screen');
+        if (splash) { splash.classList.add('fade-out'); setTimeout(() => { splash.style.display = 'none'; }, 500); }
+    }, 2000);
+
+    lucide.createIcons();
+    document.getElementById('show-signup').addEventListener('click', e => { e.preventDefault(); document.getElementById('login-view').classList.add('hidden'); document.getElementById('signup-view').classList.remove('hidden'); document.getElementById('forgot-view').classList.add('hidden'); });
+    document.getElementById('show-login').addEventListener('click', e => { e.preventDefault(); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('forgot-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); });
+    document.getElementById('show-forgot').addEventListener('click', e => { e.preventDefault(); document.getElementById('login-view').classList.add('hidden'); document.getElementById('signup-view').classList.add('hidden'); document.getElementById('forgot-view').classList.remove('hidden'); });
+    document.getElementById('back-to-login').addEventListener('click', e => { e.preventDefault(); document.getElementById('forgot-view').classList.add('hidden'); document.getElementById('login-view').classList.remove('hidden'); });
+    document.getElementById('signup-btn').addEventListener('click', handleSignup);
+    document.getElementById('login-btn').addEventListener('click', handleLogin);
+    document.getElementById('logout-btn').addEventListener('click', handleLogout);
+    document.getElementById('copy-code-btn').addEventListener('click', copyReferralCode);
+    document.getElementById('share-btn').addEventListener('click', shareReferralLink);
+    document.getElementById('withdraw-btn').addEventListener('click', handleWithdrawal);
+    document.getElementById('withdraw-method').addEventListener('change', updatePaymentField);
+    document.getElementById('profile-img-input').addEventListener('change', handleProfileImageUpload);
+
+    loadAuthSlider();
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) localStorage.setItem('pendingReferralCode', refCode);
+
+    onAuthStateChanged(auth, handleAuthStateChange);
+};
+
+async function handleAuthStateChange(user) {
+    if (user) {
+        showLoader();
+        currentUser = user;
+        await fetchUserData();
+        if (userData.isBlocked) { showAlert("Your account has been blocked."); await signOut(auth); hideLoader(); return; }
+        await fetchAppConfig();
+
+        // Currency system from config
+        if (appConfig.currencySystem === 'USD') {
+            appCurrency = 'USD'; currencySymbol = '$';
+        } else {
+            appCurrency = 'BDT'; currencySymbol = '৳';
+        }
+
+        if (appConfig.maintenanceMode) {
+            document.getElementById('maintenance-msg').textContent = appConfig.maintenanceMessage || 'We are currently upgrading our system. Please check back shortly.';
+            document.getElementById('maintenance-page').style.display = 'flex';
+            hideLoader();
+            return;
+        }
+
+        checkDeviceRestriction();
+        await applyRegistrationBonus();
+        checkDailyReset();
+        updateUI();
+        showApp();
+        navigateTo('home-page');
+        loadHomeData();
+        checkNewNotifications();
+        loadTotalReferrals();
+
+        const pending = localStorage.getItem('pendingReferralCode');
+        if (pending && !userData.referredBy) { await applyReferralBonus(pending, false); localStorage.removeItem('pendingReferralCode'); }
+        hideLoader();
+    } else {
+        currentUser = null;
+        userData = {};
+        document.getElementById('auth-section').classList.remove('hidden-page');
+        document.getElementById('app-container').classList.remove('active');
+    }
+}
+
+function showApp() {
+    document.getElementById('auth-section').classList.add('hidden-page');
+    document.getElementById('app-container').classList.add('active');
+}
+
+async function fetchUserData() {
+    const userRef = doc(db, "users", currentUser.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+        userData = snap.data();
+    } else {
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const today = getToday();
+        const numericId = Math.floor(1000000 + Math.random() * 9000000).toString();
+        const regBonus = 50;
+        const def = {
+            uid: currentUser.uid, name: currentUser.email.split('@')[0], email: currentUser.email,
+            balance: regBonus, referralCode: code, referredBy: null, numericId,
+            lastNotificationCheck: new Date(), createdAt: serverTimestamp(),
+            dailyAdCount: 0, lastAdWatchDate: today, isBlocked: false, referralCount: 0,
+            todayEarned: 0, todayEarnedDate: today, profilePhoto: null,
+            totalDeposit: 0, activePlans: [], registrationBonusApplied: true
+        };
+        await setDoc(userRef, def);
+        userData = def;
+    }
+}
+
+async function fetchAppConfig() {
+    const snap = await getDoc(doc(db, "config", "main"));
+    appConfig = snap.exists() ? snap.data() : {
+        minWithdrawal: 500, paymentMethods: ["bKash", "Nagad", "Rocket"],
+        dailyAdLimit: 10, referralReward: 100, currencySystem: 'BDT'
+    };
+}
+
+function checkDailyReset() {
+    const today = getToday();
+    if (userData.todayEarnedDate !== today) {
+        userData.todayEarned = 0;
+        userData.todayEarnedDate = today;
+        userData.dailyAdCount = 0;
+        userData.lastAdWatchDate = today;
+        updateDoc(doc(db, "users", currentUser.uid), { todayEarned: 0, todayEarnedDate: today, dailyAdCount: 0, lastAdWatchDate: today });
+    }
+}
+
+function updateUI() {
+    if (!userData) return;
+    const bal = parseFloat(userData.balance || 0).toFixed(2);
+    const today = parseFloat(userData.todayEarned || 0).toFixed(2);
+    const dep = parseFloat(userData.totalDeposit || 0).toFixed(2);
+    const numericUid = userData.numericId || (userData.uid ? userData.uid.replace(/\D/g,'').slice(-7).padStart(7,'0') : '0000000');
+    const letter = (userData.name || 'U')[0].toUpperCase();
+
+    setEl('coin-balance', bal);
+    setEl('today-earned-home', today);
+    setEl('wallet-coin-balance', bal);
+    setEl('profile-balance', bal);
+    setEl('profile-today-earned', today);
+    setEl('profile-deposit-amount', dep);
+    setEl('profile-name', userData.name || 'User');
+    setEl('profile-uid', 'USER ID: ' + numericUid);
+    setEl('referral-code', userData.referralCode || '...');
+    setEl('min-withdrawal-info', (appConfig.minWithdrawal || 500) + currencySymbol);
+    setEl('referral-reward-amount', appConfig.referralReward || 100);
+    setEl('sb-name', userData.name || 'User');
+    setEl('sb-email', 'UID: ' + numericUid);
+    setEl('sb-avatar-letter', letter);
+    setEl('hdr-avatar-letter', letter);
+    setEl('profile-avatar-letter', letter);
+
+    updateCurrencySymbols();
+
+    // Profile photo
+    if (userData.profilePhoto) {
+        setEl('profile-avatar-display', `<img src="${userData.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`, 'innerHTML');
+        setEl('profile-btn-header', `<img src="${userData.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:11px">`, 'innerHTML');
+        setEl('sb-avatar-wrap', `<img src="${userData.profilePhoto}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`, 'innerHTML');
+        const rmBtn = document.getElementById('remove-photo-btn');
+        if (rmBtn) rmBtn.style.display = 'inline-block';
+    } else {
+        const rmBtn = document.getElementById('remove-photo-btn');
+        if (rmBtn) rmBtn.style.display = 'none';
+    }
+
+    // Download app button
+    if (appConfig.appDownloadUrl) {
+        const dbtn = document.getElementById('download-app-btn');
+        if (dbtn) dbtn.style.display = 'flex';
+    }
+
+    // Withdraw methods
+    const sel = document.getElementById('withdraw-method');
+    if (sel) {
+        sel.innerHTML = '';
+        (appConfig.paymentMethods || ['bKash', 'Nagad', 'Rocket']).forEach(m => {
+            const opt = document.createElement('option');
+            opt.value = m; opt.textContent = m;
+            sel.appendChild(opt);
+        });
+        updatePaymentField();
+    }
+
+    // Referral link
+    const link = `${window.location.origin}${window.location.pathname}?ref=${userData.referralCode}`;
+    setEl('referral-link', link);
+    lucide.createIcons();
+}
+
+function updatePaymentField() {
+    const method = document.getElementById('withdraw-method').value;
+    let ph = "Enter phone number";
+    if (method.toLowerCase().includes('bkash')) ph = "Enter bKash number";
+    else if (method.toLowerCase().includes('nagad')) ph = "Enter Nagad number";
+    else if (method.toLowerCase().includes('rocket')) ph = "Enter Rocket number";
+    document.getElementById('payment-details-container').innerHTML = `
+        <div class="input-with-icon" style="margin-top:12px">
+            <span class="input-icon">📱</span>
+            <input id="payment-detail-input" type="text" placeholder="${ph}" class="ep-input">
+        </div>`;
+}
+
+// === NAVIGATION ===
+window.navigateTo = function(pageId) {
+    document.querySelectorAll('.sub-page').forEach(p => p.classList.remove('active'));
+    const el = document.getElementById(pageId);
+    if (el) { el.classList.add('active'); el.scrollTop = 0; }
+
+    document.querySelectorAll('.sidebar-item[data-page]').forEach(i => i.classList.remove('active'));
+    const si = document.querySelector(`.sidebar-item[data-page="${pageId}"]`);
+    if (si) si.classList.add('active');
+
+    const tgBtn = document.getElementById('telegram-support-btn');
+    if (tgBtn) tgBtn.style.display = (pageId === 'home-page') ? 'flex' : 'none';
+
+    if (pageId === 'wallet-page') {
+        loadWithdrawalHistory(); loadWithdrawalRules();
+        const totalDep = parseFloat(userData.totalDeposit || 0);
+        const notice = document.getElementById('deposit-required-notice');
+        const withdrawForm = document.getElementById('withdraw-btn').closest('.ep-card');
+        if (notice && withdrawForm) {
+            if (totalDep <= 0) {
+                notice.style.display = 'block';
+                withdrawForm.style.opacity = '0.4';
+                withdrawForm.style.pointerEvents = 'none';
+            } else {
+                notice.style.display = 'none';
+                withdrawForm.style.opacity = '1';
+                withdrawForm.style.pointerEvents = 'auto';
+            }
+        }
+    }
+    if (pageId === 'offers-page') loadOffers();
+    if (pageId === 'leaderboard-page') loadLeaderboard();
+    if (pageId === 'rules-page') loadRules();
+    if (pageId === 'refer-page') { loadReferralRules(); loadReferralEarnings(); loadReferralTasks(); loadDepositCommissionInfo(); }
+    if (pageId === 'deposit-page') { loadDepositPage(); loadDepositHistory(); }
+    if (pageId === 'active-plans-page') loadActivePlans();
+    if (pageId === 'about-page') loadAboutUs();
+    if (pageId === 'tasks-page') loadTasksWithPlans();
+};
+
+window.sidebarNav = function(pageId, loadNotif) {
+    closeSidebar();
+    navigateTo(pageId);
+    if (loadNotif) { loadNotifications(); }
+    if (pageId === 'refer-page') { loadTotalReferrals(); }
+};
+
+window.goBack = function(pageId) {
+    navigateTo(pageId);
+};
+
+window.openSidebar = function() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('sidebar-overlay').style.display = 'block';
+};
+window.closeSidebar = function() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').style.display = 'none';
+};
+
+// === HOME DATA ===
+async function loadHomeData() {
+    loadSlider();
+    loadNoticeTicker();
+    loadInvestmentPlans();
+    loadWithdrawTicker();
+    loadPopupNotice();
+}
+
+// === SLIDER ===
+async function loadSlider() {
+    const sliderRef = ref(rtdb, 'sliders');
+    onValue(sliderRef, snap => {
+        const data = snap.val();
+        const track = document.getElementById('slider-track');
+        const dots = document.getElementById('slider-dots');
+        if (!data) {
+            track.innerHTML = '<div class="slide"><div class="slide-placeholder"><div style="font-size:40px">🎉</div><div style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:8px">No banners</div></div></div>';
+            return;
+        }
+        const items = Object.values(data);
+        track.innerHTML = items.map((s, i) => `
+            <div class="slide" onclick="sliderClick('${s.link || ''}')">
+                ${s.imageUrl ? `<img src="${s.imageUrl}" alt="Banner ${i+1}" onerror="this.parentElement.innerHTML='<div class=slide-placeholder><div style=font-size:40px>🎉</div></div>'">` : `<div class="slide-placeholder"><div style="font-size:40px">📢</div><div style="color:rgba(255,255,255,0.4);font-size:13px;margin-top:8px">${s.title || 'Banner'}</div></div>`}
+            </div>`).join('');
+        dots.innerHTML = items.map((_, i) => `<div class="slider-dot ${i===0?'active':''}" id="dot-${i}"></div>`).join('');
+        startSlider(items.length, items[0]?.speed || 3000);
+    });
+}
+
+let sliderCurrent = 0;
+let sliderTimer = null;
+function startSlider(count, speed) {
+    if (sliderTimer) clearInterval(sliderTimer);
+    if (count <= 1) return;
+    sliderTimer = setInterval(() => {
+        sliderCurrent = (sliderCurrent + 1) % count;
+        document.getElementById('slider-track').style.transform = `translateX(-${sliderCurrent * 100}%)`;
+        document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === sliderCurrent));
+    }, speed);
+}
+
+window.sliderClick = function(link) {
+    if (link) window.open(link, '_blank');
+};
+
+// === TICKER ===
+async function loadNoticeTicker() {
+    const tickerRef = ref(rtdb, 'notices');
+    onValue(tickerRef, snap => {
+        const data = snap.val();
+        const el = document.getElementById('ticker-text');
+        if (!data) { el.textContent = 'Welcome to Earnplus!'; return; }
+        const notices = Object.values(data).map(n => n.text || n.message || '').filter(Boolean);
+        el.textContent = notices.join(' ★ ');
+        const speed = Object.values(data)[0]?.speed || 20;
+        el.style.animationDuration = speed + 's';
+    });
+}
+
+// === INVESTMENT PLANS (replaces categories on home) ===
+async function loadInvestmentPlans() {
+    const plansRef = ref(rtdb, 'investmentPlans');
+    onValue(plansRef, snap => {
+        const data = snap.val();
+        const grid = document.getElementById('plans-grid');
+        if (!data) {
+            grid.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;grid-column:span 2;padding:20px">No plans available.</div>';
+            return;
+        }
+        const userPlanIds = (userData.activePlans || []).map(p => p.planId);
+        grid.innerHTML = Object.entries(data).map(([id, plan]) => {
+            const owned = userPlanIds.includes(id);
+            const images = plan.images ? Object.values(plan.images) : (plan.imageUrl ? [plan.imageUrl] : []);
+            const slidesHtml = images.length > 0 ? images.map((img, i) => `
+                <div class="plan-slide">
+                    <img src="${img}" alt="Plan" onerror="this.parentElement.innerHTML='<div class=plan-slide-placeholder>🚀</div>'">
+                </div>`).join('') :
+                `<div class="plan-slide"><div class="plan-slide-placeholder">🚀</div></div>`;
+            return `
+            <div class="plan-card ${owned ? 'owned' : ''}" id="plan-card-${id}">
+                <div class="plan-slider">
+                    <div class="plan-slider-track" id="pst-${id}">${slidesHtml}</div>
+                    ${owned ? '<div style="position:absolute;top:12px;right:12px;background:rgba(0,229,255,0.9);color:#0F172A;font-size:11px;font-weight:800;padding:4px 12px;border-radius:20px">✓ OWNED</div>' : ''}
+                </div>
+                <div class="plan-body">
+                    <div class="plan-header-row">
+                        <div class="plan-price">${currencySymbol}${plan.price || 0}</div>
+                        <div class="plan-name-badge">${plan.name || 'Plan'}</div>
+                    </div>
+                    <div class="plan-info-row">
+                        <div class="plan-info-item">
+                            <div class="plan-info-val">${plan.dailyTaskLimit || 0}</div>
+                            <div class="plan-info-lbl">Tasks/Day</div>
+                        </div>
+                        <div class="plan-info-item">
+                            <div class="plan-info-val">${currencySymbol}${plan.dailyEarnings || 0}</div>
+                            <div class="plan-info-lbl">Daily Earn</div>
+                        </div>
+                        <div class="plan-info-item">
+                            <div class="plan-info-val">${plan.duration || 0}d</div>
+                            <div class="plan-info-lbl">Duration</div>
+                        </div>
+                    </div>
+                    <div class="plan-btns">
+                        ${owned ?
+                            `<button class="plan-btn view" style="flex:1;padding:14px" onclick="openPlanTasks('${id}','${(plan.name||'Plan').replace(/'/g,"\\'")}')">📋 View Tasks</button>
+                             <button class="plan-btn unlock" style="flex:1;padding:14px" onclick="openPlanTasks('${id}','${(plan.name||'Plan').replace(/'/g,"\\'")}')">🔓 Start Earning</button>` :
+                            `<button class="plan-btn buy" style="flex:2;padding:14px;font-size:15px" onclick="buyPlan('${id}',${plan.price||0},'${(plan.name||'Plan').replace(/'/g,"\\'")}')">🚀 Buy Plan</button>
+                             <button class="plan-btn view" style="flex:1;padding:14px" onclick="viewPlanDetails('${id}')">Details</button>`
+                        }
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+        // Start plan sliders
+        Object.entries(data).forEach(([id, plan]) => {
+            const images = plan.images ? Object.values(plan.images) : [];
+            if (images.length > 1) {
+                let cur = 0;
+                setInterval(() => {
+                    cur = (cur + 1) % images.length;
+                    const t = document.getElementById(`pst-${id}`);
+                    if (t) t.style.transform = `translateX(-${cur * 100}%)`;
+                }, 3000);
+            }
+        });
+    });
+}
+
+window.buyPlan = async function(planId, price, planName) {
+    if (!currentUser) return;
+    if ((userData.balance || 0) < price) {
+        showAlert(`Insufficient balance! Please deposit ${currencySymbol}${price} to buy this plan.`);
+        setTimeout(() => navigateTo('deposit-page'), 1500);
+        return;
+    }
+    showLoader();
+    try {
+        const newBal = (userData.balance || 0) - price;
+        const buyDate = new Date().toISOString();
+        const activePlan = { planId, planName, price, buyDate, active: true };
+        const updatedPlans = [...(userData.activePlans || []), activePlan];
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            balance: newBal,
+            activePlans: updatedPlans
+        });
+        userData.balance = newBal;
+        userData.activePlans = updatedPlans;
+        updateUI();
+        // Reload plans grid
+        loadInvestmentPlans();
+        showAlert(`✅ Plan "${planName}" activated! Tasks unlocked.`);
+        // Add notification
+        await addDoc(collection(db, "users", currentUser.uid, "notifications"), {
+            title: "🚀 Plan Activated!",
+            message: `You activated "${planName}" plan for ${currencySymbol}${price}. Complete tasks daily to earn!`,
+            createdAt: serverTimestamp(), type: 'personal'
+        });
+    } catch(e) { showAlert("Error buying plan: " + e.message); }
+    hideLoader();
+};
+
+window.viewPlanDetails = function(planId) {
+    showAlert('Purchase this plan to unlock daily earning tasks!');
+};
+
+window.openPlanTasks = function(planId, planName) {
+    document.getElementById('category-page-title').textContent = planName + ' Tasks';
+    navigateTo('category-tasks-page');
+    loadPlanTasks(planId, planName);
+};
+
+async function loadPlanTasks(planId, planName) {
+    const listEl = document.getElementById('category-tasks-list');
+    listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading tasks...</div>';
+
+    const tasksRef = ref(rtdb, `tasks/${planId}`);
+    const snap = await get(tasksRef);
+    const data = snap.val();
+
+    if (!data) {
+        // Also try loading from general categories for this plan
+        listEl.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No tasks in this plan yet.</div>';
+        return;
+    }
+
+    const today = getToday();
+    if (userData.lastAdWatchDate !== today) userData.dailyAdCount = 0;
+    const limit_val = appConfig.dailyAdLimit || 10;
+    const adsLeft = Math.max(0, limit_val - (userData.dailyAdCount || 0));
+
+    let rulesHtml = '';
+    if (appConfig.taskRules && appConfig.taskRules.length > 0) {
+        rulesHtml = `<div class="task-rules-box">
+            <div class="task-rules-title">📋 Task Rules</div>
+            ${appConfig.taskRules.map(r => `<div class="task-rule-row"><span>•</span><span>${r}</span></div>`).join('')}
+        </div>`;
+    }
+    const limitHtml = `<div class="task-limit-box">⏱️ Plans Task Limit: <strong>${limit_val}</strong> &nbsp;|&nbsp; Remaining: <strong>${adsLeft}</strong></div>`;
+
+    listEl.innerHTML = rulesHtml + limitHtml + Object.entries(data).map(([tid, task]) => `
+        <div class="task-item" id="task-${tid}">
+            <div class="task-left">
+                <div class="task-icon">${task.emoji || '📋'}</div>
+                <div>
+                    <div class="task-name">${task.name || 'Task'}</div>
+                    <div class="task-reward">+${task.reward || 1}${currencySymbol} • ${task.timerSeconds || 15}s</div>
+                </div>
+            </div>
+            <button class="btn-primary" style="padding:10px 18px;font-size:13px" onclick="startTask('${tid}','${(task.name||'Task').replace(/'/g,"\\'")}',${task.reward||1},${task.timerSeconds||15},'${task.adLink||''}')">▶ Play</button>
+        </div>`).join('');
+
+    if (adsLeft === 0) {
+        listEl.innerHTML += '<div style="background:rgba(91,95,255,0.1);border:1px solid rgba(91,95,255,0.2);border-radius:14px;padding:14px;text-align:center;color:var(--accent);font-weight:600;font-size:13px">Daily task limit reached. Come back tomorrow!</div>';
+        listEl.querySelectorAll('.btn-primary').forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+    }
+}
+
+// Tasks page with plans
+async function loadTasksWithPlans() {
+    const el = document.getElementById('tasks-plans-section');
+    if (!el) return;
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+
+    const plansRef = ref(rtdb, 'investmentPlans');
+    const snap = await get(plansRef);
+    const data = snap.val();
+
+    if (!data) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No plans available.</div>'; return; }
+
+    const userPlanIds = (userData.activePlans || []).map(p => p.planId);
+    el.innerHTML = Object.entries(data).map(([id, plan]) => {
+        const owned = userPlanIds.includes(id);
+        return `<div class="ep-card" style="padding:16px;margin-bottom:12px;display:flex;align-items:center;gap:14px">
+            <div style="width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🚀</div>
+            <div style="flex:1">
+                <div style="font-weight:700;color:white;font-size:14px">${plan.name || 'Plan'}</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px">${plan.dailyTaskLimit || 0} tasks/day • ${currencySymbol}${plan.dailyEarnings || 0}/day</div>
+            </div>
+            <div>
+                ${owned ?
+                    `<button class="plan-btn unlock" style="padding:8px 14px;font-size:12px" onclick="openPlanTasks('${id}','${(plan.name||'Plan').replace(/'/g,"\\'")}')">Open Tasks</button>` :
+                    `<button class="plan-btn buy" style="padding:8px 14px;font-size:12px" onclick="buyPlan('${id}',${plan.price||0},'${(plan.name||'Plan').replace(/'/g,"\\'")}')">Buy ${currencySymbol}${plan.price||0}</button>`
+                }
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// === TASK TIMER ===
+window.startTask = function(taskId, taskName, reward, seconds, adLink) {
+    const today = getToday();
+    if (userData.lastAdWatchDate !== today) userData.dailyAdCount = 0;
+    if ((userData.dailyAdCount || 0) >= (appConfig.dailyAdLimit || 10)) {
+        showAlert("You have reached your daily task limit."); return;
+    }
+    currentTaskReward = reward;
+    currentTaskRef = taskId;
+    if (adLink) window.open(adLink, '_blank');
+    const overlay = document.getElementById('timer-overlay');
+    const display = document.getElementById('timer-display');
+    const closeBtn = document.getElementById('timer-close-btn');
+    const taskNameEl = document.getElementById('timer-task-name');
+    if (!overlay || !display || !closeBtn) return;
+    if (taskNameEl) taskNameEl.textContent = taskName;
+    overlay.style.display = 'flex';
+    display.textContent = seconds;
+    closeBtn.style.display = 'none';
+    let remaining = parseInt(seconds) || 15;
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        remaining--;
+        display.textContent = remaining;
+        if (remaining <= 0) {
+            clearInterval(timerInterval);
+            display.textContent = '✓';
+            closeBtn.style.display = 'flex';
+        }
+    }, 1000);
+};
+
+window.claimTaskReward = async function() {
+    document.getElementById('timer-overlay').style.display = 'none';
+    if (timerInterval) clearInterval(timerInterval);
+    if (!currentUser) return;
+    const reward = parseFloat(currentTaskReward || 0);
+    if (!reward || reward <= 0) return;
+    showLoader();
+    try {
+        const today = getToday();
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            balance: increment(reward),
+            todayEarned: increment(reward),
+            dailyAdCount: increment(1),
+            lastAdWatchDate: today,
+            todayEarnedDate: today
+        });
+        userData.balance = (parseFloat(userData.balance) || 0) + reward;
+        userData.todayEarned = (parseFloat(userData.todayEarned) || 0) + reward;
+        userData.dailyAdCount = (userData.dailyAdCount || 0) + 1;
+        updateUI();
+        showAlert(`🎉 You earned ${reward}${currencySymbol}`);
+    } catch(e) {
+        showAlert("Reward save failed. Please try again.");
+    }
+    hideLoader();
+};
+
+// === ACTIVE PLANS PAGE ===
+async function loadActivePlans() {
+    const el = document.getElementById('active-plans-list');
+    const plans = userData.activePlans || [];
+    if (!plans.length) {
+        el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)"><div style="font-size:48px;margin-bottom:14px">📦</div><div>No active plans yet.<br>Buy a plan to start earning!</div><button class="btn-primary" style="margin-top:16px;padding:12px 24px;font-size:14px" onclick="sidebarNav(\'home-page\')">Browse Plans</button></div>';
+        return;
+    }
+    const plansRef = ref(rtdb, 'investmentPlans');
+    const snap = await get(plansRef);
+    const planData = snap.val() || {};
+
+    el.innerHTML = plans.map((up, i) => {
+        const p = planData[up.planId] || {};
+        const buyDate = new Date(up.buyDate);
+        const duration = p.duration || up.duration || 30;
+        const endDate = new Date(buyDate.getTime() + duration * 24 * 60 * 60 * 1000);
+        const daysLeft = Math.max(0, Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)));
+        const progress = Math.min(100, ((duration - daysLeft) / duration) * 100);
+        return `
+        <div class="active-plan-card">
+            <div class="active-plan-header">
+                <div>
+                    <div class="active-plan-name">${up.planName || p.name || 'Plan'}</div>
+                    <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Bought: ${buyDate.toLocaleDateString()}</div>
+                </div>
+                <div class="active-plan-badge">${daysLeft > 0 ? 'Active' : 'Expired'}</div>
+            </div>
+            <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:2px;margin-bottom:12px">
+                <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:2px;transition:width 0.5s"></div>
+            </div>
+            <div class="active-plan-info">
+                <div class="active-plan-stat">
+                    <div class="active-plan-val">${currencySymbol}${up.price || p.price || 0}</div>
+                    <div class="active-plan-lbl">Invested</div>
+                </div>
+                <div class="active-plan-stat">
+                    <div class="active-plan-val">${currencySymbol}${p.dailyEarnings || 0}</div>
+                    <div class="active-plan-lbl">Daily</div>
+                </div>
+                <div class="active-plan-stat">
+                    <div class="active-plan-val">${daysLeft}d</div>
+                    <div class="active-plan-lbl">Remaining</div>
+                </div>
+            </div>
+            <button class="btn-primary" style="width:100%;padding:12px;margin-top:12px;font-size:13px" onclick="openPlanTasks('${up.planId}','${(up.planName||'Plan').replace(/'/g,"\\'")}')">Start Daily Tasks</button>
+        </div>`;
+    }).join('');
+}
+
+// === DEPOSIT PAGE ===
+async function loadDepositPage() {
+    // Load deposit rules
+    const rulesRef = ref(rtdb, 'depositRules');
+    const rulesSnap = await get(rulesRef);
+    const rulesData = rulesSnap.val();
+    const rulesList = document.getElementById('deposit-rules-list');
+    if (rulesData) {
+        rulesList.innerHTML = Object.values(rulesData).map(r => `<div class="deposit-rule-row"><span>•</span><span>${r.text || r}</span></div>`).join('');
+    } else {
+        rulesList.innerHTML = '<div class="deposit-rule-row"><span>•</span><span>Send the exact amount and submit your TrxID for verification.</span></div>';
+    }
+
+    // Load payment methods
+    const methodsRef = ref(rtdb, 'depositMethods');
+    const methodsSnap = await get(methodsRef);
+    const methodsData = methodsSnap.val();
+    const grid = document.getElementById('deposit-methods-grid');
+
+    const defaultMethods = [
+        { key: 'bkash', name: 'BKash', icon: '💳', type: 'bd' },
+        { key: 'nagad', name: 'Nagad', icon: '💚', type: 'bd' },
+        { key: 'rocket', name: 'Rocket', icon: '🚀', type: 'bd' },
+        { key: 'binance', name: 'Binance', icon: '🔶', type: 'crypto' }
+    ];
+
+    let methods = methodsData ? Object.entries(methodsData).map(([k,v]) => ({ key: k, name: v.name || k, icon: v.icon || '💳', type: v.type || 'bd' })) : defaultMethods;
+
+    const renderIcon = (icon) => {
+        if (icon && (icon.startsWith('http') || icon.startsWith('/'))) {
+            return `<img src="${icon}" style="width:44px;height:44px;object-fit:contain;border-radius:8px" onerror="this.outerHTML='💳'">`;
+        }
+        return icon;
+    };
+
+    grid.innerHTML = methods.map(m => `
+        <div class="payment-method-card" id="pm-${m.key}" onclick="selectDepositMethod('${m.key}','${m.name}','${m.type}')">
+            <div class="pm-icon">${renderIcon(m.icon)}</div>
+            <div class="pm-name">${m.name}</div>
+        </div>`).join('');
+
+    // Select first by default
+    if (methods.length > 0) {
+        selectDepositMethod(methods[0].key, methods[0].name, methods[0].type);
+    }
+}
+
+window.selectDepositMethod = async function(key, name, type) {
+    selectedDepositMethod = { key, name, type };
+    document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+    const el = document.getElementById(`pm-${key}`);
+    if (el) el.classList.add('selected');
+
+    const isCrypto = type === 'crypto';
+    const amountsKey = isCrypto ? 'crypto' : 'bd';
+    const sym = isCrypto ? '$' : '৳';
+
+    // Load amounts & min deposit in parallel
+    const [amountsSnap, minSnap] = await Promise.all([
+        get(ref(rtdb, `depositAmounts/${amountsKey}`)),
+        get(ref(rtdb, 'depositMinAmount'))
+    ]);
+
+    // Parse amounts — Firebase stores array as {0:v,1:v} object
+    const rawAmounts = amountsSnap.val();
+    const defaultBdAmounts = [300, 500, 800, 1000];
+    const defaultCryptoAmounts = [3, 5, 8, 10];
+    let amounts;
+    if (rawAmounts !== null && rawAmounts !== undefined) {
+        amounts = Array.isArray(rawAmounts)
+            ? rawAmounts.filter(n => n != null)
+            : Object.values(rawAmounts).filter(n => n != null).map(Number);
+    } else {
+        amounts = isCrypto ? defaultCryptoAmounts : defaultBdAmounts;
+    }
+
+    // Parse min deposit
+    const minData = minSnap.val() || {};
+    const minAmount = parseFloat(isCrypto ? (minData.crypto || 0) : (minData.bd || 0));
+    window._currentMinDeposit = minAmount;
+    window._currentDepSym = sym;
+
+    // Update custom amount input
+    const customInput = document.getElementById('deposit-custom-amount');
+    customInput.min = minAmount > 0 ? minAmount : '';
+    customInput.placeholder = minAmount > 0 ? `Min ${sym}${minAmount} — or custom amount` : 'Or enter custom amount';
+
+    // Show/update min deposit note
+    let minInfoEl = document.getElementById('deposit-min-info');
+    if (!minInfoEl) {
+        minInfoEl = document.createElement('div');
+        minInfoEl.id = 'deposit-min-info';
+        minInfoEl.style.cssText = 'font-size:12px;color:var(--accent);font-weight:600;margin-top:6px;text-align:center';
+        customInput.parentNode.insertBefore(minInfoEl, customInput.nextSibling);
+    }
+    minInfoEl.textContent = minAmount > 0 ? `⚠️ Minimum deposit: ${sym}${minAmount}` : '';
+
+    // Render chips
+    const amountsGrid = document.getElementById('deposit-amounts-grid');
+    amountsGrid.innerHTML = amounts.length
+        ? amounts.map(a => `<div class="amount-chip" onclick="selectDepositAmount(${a},'${sym}',this)">${sym}${a}</div>`).join('')
+        : '';
+
+    // Load wallet addresses
+    const walletsRef = ref(rtdb, `depositWallets/${key}`);
+    const walletsSnap = await get(walletsRef);
+    const walletsData = walletsSnap.val();
+    const walletSection = document.getElementById('deposit-wallet-section');
+    const walletAddresses = document.getElementById('deposit-wallet-addresses');
+    walletSection.style.display = 'block';
+
+    if (walletsData) {
+        // walletsData can be a plain string (from admin) or an object with multiple addresses
+        if (typeof walletsData === 'string') {
+            // Single string wallet — phone number or address
+            const label = isCrypto ? `${name} Address` : `${name} Number`;
+            walletAddresses.innerHTML = `
+                <div class="wallet-addr-box">
+                    <div class="wallet-addr-label">${label}</div>
+                    <div class="wallet-addr-row">
+                        <div class="wallet-addr-val">${walletsData}</div>
+                        <button class="copy-addr-btn" onclick="copyAddress('${walletsData.replace(/'/g,"\\'")}')">
+                            <i data-lucide="copy" style="width:16px;height:16px"></i>
+                        </button>
+                    </div>
+                </div>`;
+        } else if (typeof walletsData === 'object') {
+            // Object with multiple wallet entries e.g. {trc20: "addr1", ltc: "addr2"}
+            walletAddresses.innerHTML = Object.entries(walletsData).map(([k, w]) => `
+                <div class="wallet-addr-box">
+                    <div class="wallet-addr-label">${w.label || k}</div>
+                    <div class="wallet-addr-row">
+                        <div class="wallet-addr-val">${w.address || w}</div>
+                        <button class="copy-addr-btn" onclick="copyAddress('${(w.address||w).toString().replace(/'/g,"\\'")}')">
+                            <i data-lucide="copy" style="width:16px;height:16px"></i>
+                        </button>
+                    </div>
+                </div>`).join('');
+        }
+    } else {
+        // Default wallets
+        if (isCrypto) {
+            walletAddresses.innerHTML = `
+                <div class="wallet-addr-box">
+                    <div class="wallet-addr-label">TRC20 (USDT)</div>
+                    <div class="wallet-addr-row">
+                        <div class="wallet-addr-val" id="trc20-addr">TRC20 address not set</div>
+                        <button class="copy-addr-btn" onclick="copyAddress(document.getElementById('trc20-addr').textContent)">
+                            <i data-lucide="copy" style="width:16px;height:16px"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="wallet-addr-box">
+                    <div class="wallet-addr-label">Litecoin (LTC)</div>
+                    <div class="wallet-addr-row">
+                        <div class="wallet-addr-val" id="ltc-addr">LTC address not set</div>
+                        <button class="copy-addr-btn" onclick="copyAddress(document.getElementById('ltc-addr').textContent)">
+                            <i data-lucide="copy" style="width:16px;height:16px"></i>
+                        </button>
+                    </div>
+                </div>`;
+        } else {
+            walletAddresses.innerHTML = `
+                <div class="wallet-addr-box">
+                    <div class="wallet-addr-label">${name} Number</div>
+                    <div class="wallet-addr-row">
+                        <div class="wallet-addr-val" id="bd-wallet-addr">Number not set by admin</div>
+                        <button class="copy-addr-btn" onclick="copyAddress(document.getElementById('bd-wallet-addr').textContent)">
+                            <i data-lucide="copy" style="width:16px;height:16px"></i>
+                        </button>
+                    </div>
+                </div>`;
+        }
+    }
+    lucide.createIcons();
+};
+
+window.selectDepositAmount = function(amount, sym, el) {
+    selectedDepositAmount = amount;
+    document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('deposit-custom-amount').value = amount;
+};
+
+window.copyAddress = function(addr) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(addr).then(() => showAlert('Address copied!')).catch(() => fbCopy(addr));
+    } else fbCopy(addr);
+};
+
+window.submitDeposit = async function() {
+    const amount = parseFloat(document.getElementById('deposit-custom-amount').value) || selectedDepositAmount;
+    const trxId = document.getElementById('deposit-trxid').value.trim();
+    if (!amount || amount <= 0) { showAlert('Please select or enter an amount.'); return; }
+    if (!selectedDepositMethod) { showAlert('Please select a payment method.'); return; }
+    // Minimum deposit check
+    const minDep = window._currentMinDeposit || 0;
+    const depSym = window._currentDepSym || '৳';
+    if (minDep > 0 && amount < minDep) {
+        showAlert(`Minimum deposit is ${depSym}${minDep}. Please enter a higher amount.`);
+        return;
+    }
+    if (!trxId) { showAlert('Please enter your Transaction ID ( TrxID ).'); return; }
+
+    showLoader();
+    try {
+        const depositRef = await addDoc(collection(db, "deposits"), {
+            userId: currentUser.uid,
+            userName: userData.name,
+            userEmail: userData.email,
+            numericId: userData.numericId || '',
+            amount,
+            method: selectedDepositMethod.name,
+            methodType: selectedDepositMethod.type,
+            trxId,
+            status: 'pending',
+            requestedAt: serverTimestamp()
+        });
+
+        // Show deposit pending popup
+        const popRef = ref(rtdb, 'depositPendingNotice');
+        const popSnap = await get(popRef);
+        const popData = popSnap.val();
+        document.getElementById('popup-title').textContent = popData?.title || '⏳ Deposit Pending';
+        document.getElementById('popup-desc').textContent = popData?.description || 'Your deposit request has been submitted. Admin will approve within 24 hours.';
+        document.getElementById('popup-notice').style.display = 'flex';
+
+        // Add personal notification
+        await addDoc(collection(db, "users", currentUser.uid, "notifications"), {
+            title: "💳 Deposit Request Submitted",
+            message: `Your deposit of ${selectedDepositMethod.type === 'crypto' ? '$' : '৳'}${amount} via ${selectedDepositMethod.name} is pending approval. TrxID: ${trxId}`,
+            createdAt: serverTimestamp(), type: 'personal'
+        });
+
+        document.getElementById('deposit-trxid').value = '';
+        document.getElementById('deposit-custom-amount').value = '';
+        selectedDepositAmount = 0;
+        document.querySelectorAll('.amount-chip').forEach(c => c.classList.remove('selected'));
+        loadDepositHistory();
+    } catch(e) { showAlert('Error submitting deposit'); }
+    hideLoader();
+};
+
+async function loadDepositHistory() {
+    const el = document.getElementById('deposit-history-list');
+    if (!currentUser) return;
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+    const q = query(collection(db, "deposits"), where("userId", "==", currentUser.uid), orderBy("requestedAt", "desc"));
+    const snap = await getDocs(q);
+    if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">No deposit history.</div>'; return; }
+    el.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const chipClass = r.status === 'approved' ? 'chip-approved' : r.status === 'rejected' ? 'chip-rejected' : 'chip-pending';
+        const date = r.requestedAt?.toDate().toLocaleDateString() || 'N/A';
+        const sym = r.methodType === 'crypto' ? '$' : '৳';
+        return `<div class="ep-card" style="padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+                <div style="font-weight:700;color:white">${sym}${r.amount} • ${r.method}</div>
+                <div style="font-size:12px;color:var(--text-muted)">${date} • TxID: ${r.trxId || 'N/A'}</div>
+            </div>
+            <span class="${chipClass}">${r.status}</span>
+        </div>`;
+    }).join('');
+}
+
+// === WITHDRAW RECORD ===
+window.showWithdrawRecord = function() {
+    navigateTo('withdraw-record-page');
+    loadWithdrawRecord();
+};
+
+async function loadWithdrawRecord() {
+    const el = document.getElementById('withdraw-record-list');
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+    const q = query(collection(db, "withdrawals"), where("userId", "==", currentUser.uid), orderBy("requestedAt", "desc"));
+    const snap = await getDocs(q);
+    if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No withdrawal records.</div>'; return; }
+    el.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const chipClass = r.status === 'approved' ? 'chip-approved' : r.status === 'rejected' ? 'chip-rejected' : 'chip-pending';
+        const date = r.requestedAt?.toDate().toLocaleDateString() || 'N/A';
+        return `<div class="ep-card" style="padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+                <div style="font-weight:700;color:white">${currencySymbol}${r.amount} • ${r.method}</div>
+                <div style="font-size:12px;color:var(--text-muted)">${date} • ${r.paymentDetail}</div>
+            </div>
+            <span class="${chipClass}">${r.status}</span>
+        </div>`;
+    }).join('');
+}
+
+// === DEPOSIT RECORD ===
+window.showDepositRecord = function() {
+    navigateTo('deposit-record-page');
+    loadDepositRecord();
+};
+
+async function loadDepositRecord() {
+    const el = document.getElementById('deposit-record-list');
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+    const q = query(collection(db, "deposits"), where("userId", "==", currentUser.uid), orderBy("requestedAt", "desc"));
+    const snap = await getDocs(q);
+    if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No deposit records.</div>'; return; }
+    el.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const chipClass = r.status === 'approved' ? 'chip-approved' : r.status === 'rejected' ? 'chip-rejected' : 'chip-pending';
+        const date = r.requestedAt?.toDate().toLocaleDateString() || 'N/A';
+        const sym = r.methodType === 'crypto' ? '$' : '৳';
+        return `<div class="ep-card" style="padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+                <div style="font-weight:700;color:white">${sym}${r.amount} • ${r.method}</div>
+                <div style="font-size:12px;color:var(--text-muted)">${date} • TxID: ${r.trxId || 'N/A'}</div>
+            </div>
+            <span class="${chipClass}">${r.status}</span>
+        </div>`;
+    }).join('');
+}
+
+// === WITHDRAW TICKER ===
+async function loadWithdrawTicker() {
+    const wRef = ref(rtdb, 'withdrawTicker');
+    onValue(wRef, snap => {
+        const data = snap.val();
+        const track = document.getElementById('withdraw-ticker-track');
+        if (!data) { track.innerHTML = `<div class="withdraw-ticker-item"><div class="wtick-left"><div class="wtick-avatar">E</div><div><div class="wtick-name">Earnplus User</div><div class="wtick-method">bKash</div></div></div><div class="wtick-right"><div class="wtick-amount">500${currencySymbol}</div><div class="wtick-status">✅ Successful</div></div></div>`; return; }
+        const items = Object.values(data);
+        const html = [...items, ...items].map(w => `
+            <div class="withdraw-ticker-item">
+                <div class="wtick-left">
+                    <div class="wtick-avatar">${(w.username||'U')[0].toUpperCase()}</div>
+                    <div>
+                        <div class="wtick-name">${w.username || 'User'}</div>
+                        <div class="wtick-method">${w.maskedNumber || '01***'} • ${w.method || 'bKash'}</div>
+                    </div>
+                </div>
+                <div class="wtick-right">
+                    <div class="wtick-amount">${w.amount || 0}${currencySymbol}</div>
+                    <div class="wtick-status">✅ Successful</div>
+                </div>
+            </div>`).join('');
+        track.innerHTML = html;
+        const speed = Object.values(data)[0]?.speed || 12;
+        track.style.animationDuration = speed + 's';
+    });
+}
+
+// === POPUP NOTICE ===
+async function loadPopupNotice() {
+    const popRef = ref(rtdb, 'popupNotice');
+    const snap = await get(popRef);
+    const data = snap.val();
+    if (!data || !data.active) return;
+    document.getElementById('popup-title').textContent = data.title || 'Notice';
+    document.getElementById('popup-desc').textContent = data.description || '';
+    document.getElementById('popup-notice').style.display = 'flex';
+}
+window.closePopup = function() { document.getElementById('popup-notice').style.display = 'none'; };
+
+// === OFFERS ===
+async function loadOffers() {
+    const offRef = ref(rtdb, 'offers');
+    const snap = await get(offRef);
+    const data = snap.val();
+    const el = document.getElementById('offers-list');
+    if (!data) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No offers available.</div>'; return; }
+    el.innerHTML = Object.values(data).map(o => `
+        <div class="offer-card">
+            ${o.imageUrl ? `<img class="offer-img" src="${o.imageUrl}" alt="${o.title}" onerror="this.style.display='none'">` : `<div class="offer-img" style="display:flex;align-items:center;justify-content:center;font-size:50px">🎁</div>`}
+            <div class="offer-body">
+                <div class="offer-title">${o.title || 'Offer'}</div>
+                <div class="offer-desc">${o.description || ''}</div>
+                ${o.link ? `<a href="${o.link}" target="_blank" class="offer-link">View Offer →</a>` : ''}
+            </div>
+        </div>`).join('');
+}
+
+// === LEADERBOARD ===
+async function loadLeaderboard() {
+    const lbRef = ref(rtdb, 'leaderboard');
+    const snap = await get(lbRef);
+    const data = snap.val();
+    const el = document.getElementById('leaderboard-list');
+    if (!data) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No entries yet.</div>'; return; }
+    const items = Object.values(data).sort((a, b) => (b.totalEarned || b.balance || 0) - (a.totalEarned || a.balance || 0));
+    const currentName = userData.name || '';
+    let myRank = -1;
+    items.forEach((p, i) => { if (currentName && p.username && p.username.trim().toLowerCase() === currentName.trim().toLowerCase()) myRank = i + 1; });
+    let myRankBanner = '';
+    if (myRank > 0) {
+        const medal = myRank === 1 ? '🥇' : myRank === 2 ? '🥈' : myRank === 3 ? '🥉' : '🏅';
+        myRankBanner = `<div style="background:linear-gradient(135deg,var(--primary),var(--secondary));border-radius:18px;padding:16px 20px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 20px rgba(91,95,255,0.3)">
+            <div>
+                <div style="font-size:11px;font-weight:700;color:rgba(255,255,255,0.7);text-transform:uppercase">Your Ranking</div>
+                <div style="font-size:28px;font-weight:900;color:white;font-family:'Poppins',sans-serif">${medal} #${myRank}</div>
+            </div>
+            <div style="font-size:40px">${medal}</div>
+        </div>`;
+    }
+    el.innerHTML = myRankBanner + `<div class="ep-card" style="overflow:hidden">${items.map((p, i) => {
+        const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+        const displayUid = p.numericId || '';
+        const isMe = currentName && p.username && p.username.trim().toLowerCase() === currentName.trim().toLowerCase();
+        return `<div class="lb-item" style="${isMe ? 'background:rgba(91,95,255,0.1);border-left:3px solid var(--primary);' : ''}">
+            <div class="lb-rank ${rankClass}">${medal || (i + 1)}</div>
+            ${p.profileImage ? `<img class="lb-avatar" src="${p.profileImage}" onerror="this.style.display='none'">` : `<div class="lb-avatar" style="display:flex;align-items:center;justify-content:center;font-weight:800;color:white;background:linear-gradient(135deg,var(--primary),var(--secondary))">${(p.username||'U')[0].toUpperCase()}</div>`}
+            <div style="flex:1">
+                <div class="lb-name">${p.username || 'User'}${isMe ? ' <span style="font-size:10px;background:var(--primary);color:white;padding:2px 6px;border-radius:8px;font-weight:800">YOU</span>' : ''}</div>
+                ${displayUid ? `<div class="lb-uid">UID: ${displayUid}</div>` : ''}
+            </div>
+            <div class="lb-earned">${p.totalEarned || p.balance || 0}${currencySymbol}</div>
+        </div>`;
+    }).join('')}</div>`;
+}
+
+// === RULES ===
+async function loadRules() {
+    const rulesRef = ref(rtdb, 'rules');
+    const snap = await get(rulesRef);
+    const data = snap.val();
+    const el = document.getElementById('rules-list');
+    if (!data) { el.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted)">No rules added yet.</div>'; return; }
+    el.innerHTML = Object.values(data).map(r => `
+        <div class="rule-item">
+            <div class="rule-bullet"></div>
+            <div class="rule-text">${r.text || r.rule || ''}</div>
+        </div>`).join('');
+}
+
+// === NOTIFICATIONS ===
+async function checkNewNotifications() {
+    if (!userData.lastNotificationCheck) return;
+    const lastCheck = userData.lastNotificationCheck;
+    const q = query(collection(db, "notifications"), where("createdAt", ">", lastCheck), limit(1));
+    const snap = await getDocs(q);
+    document.getElementById('notification-dot').style.display = snap.empty ? 'none' : 'block';
+}
+
+async function loadNotifications() {
+    const el = document.getElementById('notifications-list');
+    el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</div>';
+    document.getElementById('notification-dot').style.display = 'none';
+    let all = [];
+    const gQ = query(collection(db, "notifications"), orderBy("createdAt", "desc"));
+    const gSnap = await getDocs(gQ);
+    gSnap.forEach(d => { const data = d.data(); all.push({ ...data, date: data.createdAt?.toDate() || new Date(), type: 'global' }); });
+    if (currentUser) {
+        const uQ = query(collection(db, "users", currentUser.uid, "notifications"), orderBy("createdAt", "desc"));
+        const uSnap = await getDocs(uQ);
+        uSnap.forEach(d => { const data = d.data(); all.push({ ...data, date: data.createdAt?.toDate() || new Date(), type: 'personal' }); });
+    }
+    all.sort((a, b) => b.date - a.date);
+    if (!all.length) { el.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-muted)">No notifications yet.</div>'; return; }
+    el.innerHTML = all.map(n => `
+        <div class="notif-card ${n.type}">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+                <span style="font-weight:700;color:white">${n.title || 'Notification'}</span>
+                <span style="font-size:11px;color:var(--text-muted)">${n.date.toLocaleDateString()}</span>
+            </div>
+            <p style="font-size:13px;color:var(--text-muted);margin:0">${n.message || ''}</p>
+            ${n.type === 'personal' ? '<span style="font-size:10px;background:rgba(156,108,255,0.2);color:var(--secondary);padding:2px 8px;border-radius:20px;font-weight:700;margin-top:6px;display:inline-block">Personal</span>' : ''}
+        </div>`).join('');
+    await updateDoc(doc(db, "users", currentUser.uid), { lastNotificationCheck: serverTimestamp() });
+}
+
+// === REFERRAL ===
+async function loadTotalReferrals() {
+    if (!userData.referralCode) return;
+    const q = query(collection(db, "users"), where("referredBy", "==", userData.referralCode));
+    const snap = await getDocs(q);
+    document.getElementById('total-referrals').textContent = snap.size;
+}
+
+async function loadReferralEarnings() {
+    if (!currentUser || !userData.referralCode) return;
+    const reward = appConfig.referralReward || 100;
+    const q = query(collection(db, "users"), where("referredBy", "==", userData.referralCode));
+    const snap = await getDocs(q);
+    const totalEarnings = snap.size * reward;
+    const el = document.getElementById('total-referral-earnings');
+    if (el) el.textContent = totalEarnings;
+    const totalEl = document.getElementById('total-referrals');
+    if (totalEl) totalEl.textContent = snap.size;
+}
+
+async function loadDepositCommissionInfo() {
+    const commRef = ref(rtdb, 'depositCommission');
+    const snap = await get(commRef);
+    const data = snap.val();
+    const box = document.getElementById('deposit-commission-box');
+    const info = document.getElementById('deposit-commission-info');
+    if (!data || !box || !info) return;
+    // Admin saves as flat object: {title, percent, description}
+    if (data.percent || data.title) {
+        box.style.display = 'block';
+        info.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:8px">
+                <span style="font-weight:600;color:rgba(255,255,255,0.85)">${data.title || 'Deposit Commission'}</span>
+                <span style="color:var(--accent);font-weight:800;font-size:18px">${data.percent || 0}%</span>
+            </div>
+            ${data.description ? `<div style="font-size:12px;color:var(--text-muted);line-height:1.6">${data.description}</div>` : ''}`;
+    } else {
+        box.style.display = 'none';
+    }
+}
+
+async function loadReferralTasks() {
+    const tasksRef = ref(rtdb, 'referralTasks');
+    const snap = await get(tasksRef);
+    const data = snap.val();
+    const el = document.getElementById('referral-tasks-list');
+    if (!data) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">No referral tasks.</div>'; return; }
+    const currentRefs = userData.referralCount || 0;
+    el.innerHTML = Object.entries(data).map(([id, t]) => {
+        const progress = Math.min(100, (currentRefs / (t.target || 10)) * 100);
+        const done = currentRefs >= (t.target || 10);
+        return `<div class="referral-task-item">
+            <div style="flex:1">
+                <div style="font-weight:700;color:white;font-size:14px">Refer ${t.target || 0} users</div>
+                <div style="font-size:12px;color:var(--accent);margin-top:2px">🎁 Reward: ${currencySymbol}${t.reward || 0}</div>
+                <div class="ref-task-progress">${currentRefs}/${t.target || 0} completed</div>
+                <div class="ref-task-bar"><div class="ref-task-bar-fill" style="width:${progress}%"></div></div>
+            </div>
+            <div style="margin-left:12px">
+                ${done ? '<span style="background:rgba(16,185,129,0.2);color:#34d399;padding:6px 12px;border-radius:20px;font-size:12px;font-weight:700;border:1px solid rgba(16,185,129,0.3)">✓ Done</span>' :
+                    `<span style="color:var(--text-muted);font-size:12px">${Math.max(0,(t.target||0)-currentRefs)} left</span>`}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function copyReferralCode() {
+    const code = document.getElementById('referral-code').textContent.trim();
+    if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => showAlert("Code copied!")).catch(() => fbCopy(code));
+    else fbCopy(code);
+}
+
+function shareReferralLink() {
+    const link = document.getElementById('referral-link').textContent.trim();
+    const text = `Join Earnplus and earn money! Use my referral link:\n${link}`;
+    if (navigator.share) navigator.share({ title: 'Join Earnplus!', text });
+    else { if (navigator.clipboard) navigator.clipboard.writeText(link); showAlert("Link copied!"); }
+}
+
+function fbCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showAlert("Copied!"); } catch(e) { showAlert("Copy failed."); }
+    document.body.removeChild(ta);
+}
+
+async function applyReferralBonus(referrerCode, isManual) {
+    const reward = appConfig.referralReward || 100;
+    const q = query(collection(db, "users"), where("referralCode", "==", referrerCode));
+    try {
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+            const referrerDoc = snap.docs[0];
+            await updateDoc(referrerDoc.ref, { balance: (referrerDoc.data().balance || 0) + reward, referralCount: increment(1) });
+            await updateDoc(doc(db, "users", currentUser.uid), { balance: (userData.balance || 0) + reward, referredBy: referrerCode });
+            userData.balance = (userData.balance || 0) + reward;
+            userData.referredBy = referrerCode;
+            updateUI();
+            if (isManual) showAlert(`🎉 You received ${reward}${currencySymbol} bonus!`);
+        } else {
+            if (isManual) showAlert("Invalid referral code.");
+        }
+    } catch(e) { if (isManual) showAlert("Error applying code."); }
+}
+
+// === WITHDRAWAL ===
+async function handleWithdrawal() {
+    const amount = parseInt(document.getElementById('withdraw-amount').value);
+    const method = document.getElementById('withdraw-method').value;
+    const phone = document.getElementById('payment-detail-input')?.value.trim();
+    const min = appConfig.minWithdrawal || 500;
+    if (!amount || amount <= 0) { showAlert("Please enter a valid amount."); return; }
+    if (amount < min) { showAlert(`Minimum withdrawal is ${min}${currencySymbol}.`); return; }
+    if (amount > (userData.balance || 0)) { showAlert("Insufficient balance."); return; }
+    if (!phone) { showAlert("Please enter phone number."); return; }
+
+    // First deposit required check
+    const totalDep = parseFloat(userData.totalDeposit || 0);
+    if (totalDep <= 0) {
+        showAlert("⚠️ You must make at least one deposit before you can withdraw. Please deposit first.");
+        return;
+    }
+    showLoader();
+    try {
+        const newBal = (userData.balance || 0) - amount;
+        await updateDoc(doc(db, "users", currentUser.uid), { balance: newBal });
+        await addDoc(collection(db, "withdrawals"), {
+            userId: currentUser.uid, userName: userData.name, userEmail: userData.email,
+            amount, method, paymentDetail: phone, status: "pending", requestedAt: serverTimestamp()
+        });
+        userData.balance = newBal;
+        updateUI();
+        showAlert("✅ Withdrawal request submitted!");
+        document.getElementById('withdraw-amount').value = '';
+        document.getElementById('payment-detail-input').value = '';
+        loadWithdrawalHistory();
+    } catch(e) {
+        showAlert("Error Withdrawal request");
+        await updateDoc(doc(db, "users", currentUser.uid), { balance: userData.balance + amount });
+        userData.balance += amount;
+        updateUI();
+    }
+    hideLoader();
+}
+
+async function loadWithdrawalHistory() {
+    const el = document.getElementById('withdrawal-history-list');
+    if (!currentUser) return;
+    el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">Loading...</div>';
+    const q = query(collection(db, "withdrawals"), where("userId", "==", currentUser.uid), orderBy("requestedAt", "desc"));
+    const snap = await getDocs(q);
+    if (snap.empty) { el.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-muted)">No withdrawal history.</div>'; return; }
+    el.innerHTML = snap.docs.map(d => {
+        const r = d.data();
+        const chipClass = r.status === 'approved' ? 'chip-approved' : r.status === 'rejected' ? 'chip-rejected' : 'chip-pending';
+        const date = r.requestedAt?.toDate().toLocaleDateString() || 'N/A';
+        return `<div class="ep-card" style="padding:14px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+            <div>
+                <div style="font-weight:700;color:white">${r.amount}${currencySymbol} • ${r.method}</div>
+                <div style="font-size:12px;color:var(--text-muted)">${date} • ${r.paymentDetail}</div>
+            </div>
+            <span class="${chipClass}">${r.status}</span>
+        </div>`;
+    }).join('');
+}
+
+// === WITHDRAWAL RULES ===
+async function loadWithdrawalRules() {
+    const rulesRef = ref(rtdb, 'withdrawalRules');
+    const snap = await get(rulesRef);
+    const data = snap.val();
+    const box = document.getElementById('withdrawal-rules-box');
+    const list = document.getElementById('withdrawal-rules-list');
+    if (!data || !box || !list) return;
+    const items = Object.values(data);
+    if (!items.length) { box.style.display = 'none'; return; }
+    list.innerHTML = items.map(r => `<div class="withdrawal-rule-row"><span>•</span><span>${r.text || r}</span></div>`).join('');
+    box.style.display = 'block';
+}
+
+// === REFERRAL RULES ===
+async function loadReferralRules() {
+    const rulesRef = ref(rtdb, 'referralRules');
+    const snap = await get(rulesRef);
+    const data = snap.val();
+    const box = document.getElementById('referral-rules-box');
+    const list = document.getElementById('referral-rules-list');
+    if (!box || !list) return;
+    if (!data) { box.style.display = 'none'; return; }
+    const items = Object.values(data);
+    if (!items.length) { box.style.display = 'none'; return; }
+    list.innerHTML = items.map(r => `<div class="referral-rule-row"><span>•</span><span>${r.text || r}</span></div>`).join('');
+    box.style.display = 'block';
+}
+
+// === ABOUT US ===
+async function loadAboutUs() {
+    const el = document.getElementById('about-content-section');
+    const aboutRef = ref(rtdb, 'aboutUs');
+    const snap = await get(aboutRef);
+    const data = snap.val();
+    if (!data) {
+        el.innerHTML = `<div class="about-section">
+            <div style="text-align:center;margin-bottom:16px">
+                <div style="font-size:48px;margin-bottom:10px">💰</div>
+                <div style="font-size:20px;font-weight:800;color:white;font-family:'Poppins',sans-serif">Earnplus</div>
+                <div style="font-size:13px;color:var(--text-muted);margin-top:4px">Earn money, withdraw anytime!</div>
+            </div>
+            <div class="about-content">Welcome to Earnplus — your trusted platform for earning money online through tasks, referrals, and investment plans.</div>
+        </div>`;
+        return;
+    }
+    if (typeof data === 'string') {
+        el.innerHTML = `<div class="about-section"><div class="about-content">${data}</div></div>`;
+    } else {
+        el.innerHTML = Object.values(data).map(item => `
+            <div class="about-section">
+                ${item.title ? `<div style="font-weight:700;color:white;font-size:15px;margin-bottom:8px;font-family:'Poppins',sans-serif">${item.title}</div>` : ''}
+                <div class="about-content">${item.content || item.text || item}</div>
+            </div>`).join('');
+    }
+}
+
+// === DOWNLOAD APP ===
+window.downloadApp = function() {
+    const url = appConfig.appDownloadUrl;
+    if (url) window.open(url, '_blank');
+    else showAlert('App download not available yet.');
+};
+
+// === PROFILE IMAGE ===
+async function handleProfileImageUpload(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    if (file.size > 500000) { showAlert("Image too large. Max 500KB."); return; }
+    showLoader();
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+        const b64 = ev.target.result;
+        try {
+            await updateDoc(doc(db, "users", currentUser.uid), { profilePhoto: b64 });
+            userData.profilePhoto = b64;
+            updateUI();
+            showAlert("Profile photo updated!");
+        } catch(err) { showAlert("Error uploading photo."); }
+        hideLoader();
+    };
+    reader.readAsDataURL(file);
+    e.target.value = '';
+}
+
+window.removeProfilePhoto = async function() {
+    showLoader();
+    await updateDoc(doc(db, "users", currentUser.uid), { profilePhoto: null });
+    userData.profilePhoto = null;
+    updateUI();
+    hideLoader();
+    showAlert("Profile photo removed.");
+};
+
+// === FORGOT PASSWORD ===
+window.forgotPassword = function() {
+    // From profile page - redirect to login with forgot view
+    document.getElementById('app-container').classList.remove('active');
+    document.getElementById('auth-section').classList.remove('hidden-page');
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('signup-view').classList.add('hidden');
+    document.getElementById('forgot-view').classList.remove('hidden');
+};
+
+window.submitForgotRequest = async function() {
+    const username = document.getElementById('forgot-username').value.trim();
+    const uid = document.getElementById('forgot-uid').value.trim();
+    const email = document.getElementById('forgot-email').value.trim();
+    const message = document.getElementById('forgot-message').value.trim();
+    if (!username || !email) { showAlert("Please enter your name and email."); return; }
+    showLoader();
+    try {
+        await addDoc(collection(db, "passwordResets"), {
+            username, uid, email, message,
+            status: 'pending',
+            requestedAt: serverTimestamp()
+        });
+        document.getElementById('forgot-username').value = '';
+        document.getElementById('forgot-uid').value = '';
+        document.getElementById('forgot-email').value = '';
+        document.getElementById('forgot-message').value = '';
+        document.getElementById('forgot-view').classList.add('hidden');
+        document.getElementById('login-view').classList.remove('hidden');
+        showAlert("✅ Your password reset request has been sent to admin.");
+    } catch(e) { showAlert("Error password reset "); }
+    hideLoader();
+};
+window.helpCenter = function() {
+    const tgLink = appConfig.telegramSupportLink || (appConfig.telegramUsername ? `https://t.me/${appConfig.telegramUsername}` : 'https://t.me/earnplus_support');
+    window.open(tgLink, '_blank');
+};
+window.joinTelegramGroup = function() {
+    const tgLink = appConfig.telegramGroupLink || appConfig.telegramSupportLink || (appConfig.telegramUsername ? `https://t.me/${appConfig.telegramUsername}` : 'https://t.me/earnplus_group');
+    window.open(tgLink, '_blank');
+};
+window.openTelegramSupport = function() {
+    const tgLink = appConfig.telegramSupportLink || (appConfig.telegramUsername ? `https://t.me/${appConfig.telegramUsername}` : 'https://t.me/earnplus_support');
+    window.open(tgLink, '_blank');
+};
+
+// === AUTH HANDLERS ===
+async function handleSignup() {
+    const name = document.getElementById('signup-name').value.trim();
+    const email = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+    if (!name || !email || !password) { showAlert("Please fill all fields."); return; }
+    const deviceId = getDeviceFingerprint();
+    const deviceKey = 'ep_devices_' + deviceId;
+    const storedAccounts = JSON.parse(localStorage.getItem(deviceKey) || '[]');
+    if (storedAccounts.length >= 2) { showAlert("Maximum 2 accounts per device allowed."); return; }
+    showLoader();
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        const code = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const today = getToday();
+        const numericId = Math.floor(1000000 + Math.random() * 9000000).toString();
+        const regBonus = appConfig.registrationBonus || 50;
+        await setDoc(doc(db, "users", cred.user.uid), {
+            name, email, uid: cred.user.uid, numericId,
+            balance: regBonus, referralCode: code, referredBy: null,
+            lastNotificationCheck: new Date(), createdAt: serverTimestamp(),
+            dailyAdCount: 0, lastAdWatchDate: today, isBlocked: false, referralCount: 0,
+            todayEarned: 0, todayEarnedDate: today, profilePhoto: null,
+            totalDeposit: 0, activePlans: [],
+            deviceId, registrationBonusApplied: true
+        }, { merge: true });
+        storedAccounts.push(cred.user.uid);
+        localStorage.setItem(deviceKey, JSON.stringify(storedAccounts));
+        showAlert(`✅ Signup successful! Welcome to Earnplus. You received ${regBonus}${currencySymbol} registration bonus`);
+    } catch(e) {
+        if (e.code === 'auth/email-already-in-use') showAlert("Email already registered. Please login.");
+        else showAlert("Signup failed");
+    }
+    hideLoader();
+}
+
+async function handleLogin() {
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    if (!email || !password) { showAlert("Please enter email and password."); return; }
+    showLoader();
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+    } catch(e) {
+        if (e.code === 'auth/user-not-found' || e.code === 'auth/wrong-password') showAlert("Invalid email or password.");
+        else showAlert("Password Wrong,Please Rights Password Enter");
+        hideLoader();
+    }
+}
+
+async function handleLogout() {
+    showLoader();
+    try {
+        await signOut(auth);
+        currentUser = null;
+        userData = {};
+        document.getElementById('auth-section').classList.remove('hidden-page');
+        document.getElementById('app-container').classList.remove('active');
+    } catch(e) { showAlert("Logout Error"); }
+    hideLoader();
+}
+window.handleLogout = handleLogout;
+
+// === DEVICE FINGERPRINT ===
+function getDeviceFingerprint() {
+    const ua = navigator.userAgent;
+    const lang = navigator.language;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const screen = `${window.screen.width}x${window.screen.height}`;
+    const raw = ua + lang + tz + screen;
+    let hash = 0;
+    for (let i = 0; i < raw.length; i++) { hash = ((hash << 5) - hash) + raw.charCodeAt(i); hash |= 0; }
+    return Math.abs(hash).toString(36);
+}
+
+function checkDeviceRestriction() {
+    if (!currentUser) return;
+    const deviceId = getDeviceFingerprint();
+    const deviceKey = 'ep_devices_' + deviceId;
+    const storedAccounts = JSON.parse(localStorage.getItem(deviceKey) || '[]');
+    if (!storedAccounts.includes(currentUser.uid)) {
+        if (storedAccounts.length >= 2) {
+            showAlert("This device already has 2 accounts. Access restricted.");
+            signOut(auth);
+            return;
+        }
+        storedAccounts.push(currentUser.uid);
+        localStorage.setItem(deviceKey, JSON.stringify(storedAccounts));
+    }
+    if (!userData.deviceId) {
+        updateDoc(doc(db, "users", currentUser.uid), { deviceId }).catch(() => {});
+    }
+}
+
+// === REGISTRATION BONUS ===
+async function applyRegistrationBonus() {
+    if (!currentUser || userData.registrationBonusApplied) return;
+    const bonus = appConfig.registrationBonus || 10;
+    try {
+        await updateDoc(doc(db, "users", currentUser.uid), {
+            balance: (userData.balance || 0) + bonus,
+            registrationBonusApplied: true
+        });
+        await addDoc(collection(db, "users", currentUser.uid, "notifications"), {
+            title: "🎉 Welcome Bonus!",
+            message: `You received ${bonus}${currencySymbol} registration bonus. Start earning now`,
+            createdAt: serverTimestamp(), type: 'personal'
+        });
+        userData.balance = (userData.balance || 0) + bonus;
+        userData.registrationBonusApplied = true;
+    } catch(e) { console.error("Error applying registration bonus"); }
+}
+
+// === AUTH SLIDER ===
+function loadAuthSlider() {
+    const sliderRef = ref(rtdb, 'authSliders');
+    onValue(sliderRef, snap => {
+        const data = snap.val();
+        const track = document.getElementById('auth-slider-track');
+        const dots = document.getElementById('auth-slider-dots');
+        if (!track) return;
+        if (!data) {
+            track.innerHTML = '<div class="auth-slide"><div class="auth-slide-placeholder">🎉</div></div>';
+            return;
+        }
+        const items = Object.values(data);
+        track.innerHTML = items.map(s => `
+            <div class="auth-slide">
+                ${s.imageUrl ? `<img src="${s.imageUrl}" alt="Slide" onerror="this.parentElement.innerHTML='<div class=auth-slide-placeholder>🎉</div>'">` : `<div class="auth-slide-placeholder">📢</div>`}
+            </div>`).join('');
+        if (dots) {
+            dots.innerHTML = items.map((_, i) => `<div class="auth-dot ${i===0?'active':''}" id="adot-${i}"></div>`).join('');
+        }
+        let authSliderCurrent = 0;
+        if (items.length > 1) {
+            setInterval(() => {
+                authSliderCurrent = (authSliderCurrent + 1) % items.length;
+                track.style.transform = `translateX(-${authSliderCurrent * 100}%)`;
+                document.querySelectorAll('.auth-dot').forEach((d, i) => d.classList.toggle('active', i === authSliderCurrent));
+            }, 3000);
+        }
+    });
+}
+
+</script>
+</body>
+</html>
